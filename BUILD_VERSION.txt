@@ -1,0 +1,2 @@
+TRANSCENDENCE v0.4 — Living Multiverse Vertical Slice
+Research-informed browser-first build.
