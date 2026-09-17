@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#061019"><title>TRANSCENDENCE // VISUAL DESIGN OVERHAUL</title>
+<style>
+:root{font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;color:#eff8ff;background:#03070b}*{box-sizing:border-box}html,body,#app{margin:0;width:100%;height:100%;overflow:hidden;background:#03070b}body{touch-action:none}.world{position:fixed;inset:0}.world canvas{display:block;width:100%;height:100%}.vignette,.scan,.cinematic{position:fixed;inset:0;pointer-events:none}.vignette{background:radial-gradient(circle at 50% 42%,transparent 40%,#02040855 80%,#020408dd 100%);z-index:5}.scan{z-index:6;opacity:.07;background:repeating-linear-gradient(0deg,transparent 0 3px,#fff 4px);mix-blend-mode:soft-light}.topbar,.hud,.designer,.enter{position:fixed;z-index:20}.topbar{left:22px;top:18px;right:22px;display:flex;justify-content:space-between;align-items:center;pointer-events:none}.brand{font-weight:1000;letter-spacing:.34em;text-shadow:0 0 18px #69e7ff77}.sig{font-size:10px;letter-spacing:.18em;color:#a9bed3;text-transform:uppercase}.hud{left:22px;right:22px;bottom:18px;display:flex;justify-content:space-between;align-items:flex-end;pointer-events:none}.card{padding:12px 14px;border:1px solid #8edcff22;border-radius:17px;background:#07131de4;backdrop-filter:blur(16px);box-shadow:0 20px 60px #0009}.stats{min-width:280px}.eyebrow{font-size:9px;letter-spacing:.18em;color:#62e3ff;text-transform:uppercase}.name{font-size:18px;font-weight:900;margin:4px 0}.meta{font-size:10px;color:#9db2c8}.bar{display:flex;gap:8px;align-items:center;margin-top:8px;font-size:10px}.track{flex:1;height:7px;background:#162532;border-radius:99px;overflow:hidden}.fill{height:100%;border-radius:99px}.hp{background:linear-gradient(90deg,#ff6178,#ffb55e)}.st{background:linear-gradient(90deg,#55c8ff,#9d8cff)}.hudBtns{display:flex;gap:8px;pointer-events:auto}.hudBtns button,.enter button{border:1px solid #8edcff2a;background:#091824dd;color:#eef8ff;border-radius:12px;padding:10px 14px;cursor:pointer;font-weight:800;letter-spacing:.04em}.hudBtns button:hover,.enter button:hover{border-color:#68e6ff99;box-shadow:0 0 24px #68e6ff22}.designer{right:22px;top:74px;width:min(360px,88vw);display:none}.designer.show{display:block}.panel{padding:15px;border:1px solid #8edcff22;border-radius:18px;background:#07131de6;backdrop-filter:blur(16px)}.panel h3{margin:3px 0 12px}.swatches{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}.swatch{height:38px;border-radius:10px;border:1px solid #ffffff22;cursor:pointer}.designRow{display:flex;gap:8px;margin-top:10px}.designRow button{flex:1}.small{font-size:10px;color:#91a9bf;line-height:1.5}.enter{inset:0;z-index:100;display:grid;place-items:center;background:linear-gradient(180deg,#02080ded,#02060ae0)}.enter.hide{animation:fade .9s forwards;pointer-events:none}@keyframes fade{to{opacity:0;visibility:hidden}}.enterBox{width:min(880px,92vw);text-align:center}.enterLogo{font-size:clamp(52px,10vw,138px);font-weight:1000;letter-spacing:.14em;line-height:.82;text-shadow:0 0 34px #67e7ff55}.enterLine{margin:22px auto 26px;max-width:620px;color:#b2c5d8;font-size:13px;line-height:1.6}.enter button{font-size:12px;padding:13px 20px;border-radius:999px}.minimal{position:fixed;right:22px;bottom:18px;z-index:25;font-size:9px;color:#8aa4ba;letter-spacing:.12em}.toast{position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:50;padding:10px 14px;border-radius:12px;background:#081824ee;border:1px solid #76e8ff44;display:none;font-size:11px}.toast.show{display:block}.legend{position:fixed;left:22px;top:78px;z-index:18;width:190px;pointer-events:none}.legend .panel{font-size:10px}.legendRow{display:flex;align-items:center;gap:8px;margin-top:7px}.dot{width:8px;height:8px;border-radius:50%;box-shadow:0 0 16px currentColor}.player{color:#63e8ff;background:currentColor}.npc{color:#8cffc5;background:currentColor}.alien{color:#b68cff;background:currentColor}.wild{color:#ffcb72;background:currentColor}
+@media(max-width:760px){.topbar,.hud{left:10px;right:10px}.brand{font-size:11px}.sig{display:none}.legend{left:10px;top:64px}.legend .panel{display:none}.designer{right:10px;top:64px}.hud{bottom:10px}.stats{min-width:205px}.hudBtns{gap:5px}.hudBtns button{padding:9px;font-size:10px}.minimal{right:10px;bottom:11px}}
+</style>
+</head>
+<body><div id="app" class="world"></div><div class="vignette"></div><div class="scan"></div>
+<div class="topbar"><div class="brand">TRANSCENDENCE</div><div class="sig">AERION · DESIGN PASS 01</div></div>
+<div class="legend"><div class="panel"><div class="eyebrow">WORLD VISUAL LANGUAGE</div><div class="legendRow"><span class="dot player"></span> Player</div><div class="legendRow"><span class="dot npc"></span> NPC / Citizen</div><div class="legendRow"><span class="dot alien"></span> Other species</div><div class="legendRow"><span class="dot wild"></span> Wildlife</div></div></div>
+<div id="designer" class="designer"><div class="panel"><div class="eyebrow">CHARACTER DESIGN LAB</div><h3 id="designTitle">Human · Male · Wanderer</h3><div class="small">Silhouette first. Layered outfit, species identity, luminous accents and readable shapes. No capsules. No placeholder spheres.</div><div class="swatches" style="margin-top:11px"><button class="swatch" style="background:linear-gradient(145deg,#0b1e2d,#2fe4ff)" data-type="humanMale"></button><button class="swatch" style="background:linear-gradient(145deg,#23152f,#bd7dff)" data-type="humanFemale"></button><button class="swatch" style="background:linear-gradient(145deg,#11162a,#7f8cff)" data-type="aetherian"></button><button class="swatch" style="background:linear-gradient(145deg,#0f2020,#6fffc4)" data-type="veyr"></button><button class="swatch" style="background:linear-gradient(145deg,#20202d,#d8dcff)" data-type="dual"></button></div><div class="designRow"><button id="rotateBtn">ROTATE VIEW</button><button id="closeDesign">CLOSE</button></div></div></div>
+<div class="hud"><div class="card stats"><div class="eyebrow">ACTIVE FORM</div><div id="playerName" class="name">Wanderer</div><div id="playerMeta" class="meta">Human · Mobile profile · Aerion</div><div class="bar">HP <div class="track"><div id="hp" class="fill hp" style="width:100%"></div></div></div><div class="bar">ST <div class="track"><div id="st" class="fill st" style="width:100%"></div></div></div></div><div class="hudBtns"><button id="designBtn">CHARACTER DESIGN</button><button id="worldBtn">WORLD VIEW</button></div></div>
+<div class="minimal">VISUAL SYSTEM · BUILDING FROM SILHOUETTES, LIGHT, MATERIALS & SCALE</div><div id="toast" class="toast"></div>
+<div id="enter" class="enter"><div class="enterBox"><div class="eyebrow">A MULTIVERSE WHERE NO ONE IS THE MAIN CHARACTER</div><div class="enterLogo">TRANSCENDENCE</div><div class="enterLine">The old prototype is retired. This pass establishes the visual language first: human characters, multiple species, living NPCs, wildlife, futuristic Aerion, celestial scale, and cinematic lighting.</div><button id="enterBtn">ENTER THE WORLD</button></div></div>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js';
+import {GLTFLoader} from 'https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/loaders/GLTFLoader.js';
+
+const app=document.getElementById('app');
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0x061019);scene.fog=new THREE.FogExp2(0x07131e,0.018);
+const camera=new THREE.PerspectiveCamera(55,innerWidth/innerHeight,.1,2500);camera.position.set(16,10,20);
+const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.6));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;app.appendChild(renderer.domElement);
+const hemi=new THREE.HemisphereLight(0x9bdcff,0x071019,2.5);scene.add(hemi);
+const sun=new THREE.DirectionalLight(0xfff2d2,3.1);sun.position.set(-40,70,35);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);scene.add(sun);
+const cyan=new THREE.PointLight(0x4adfff,65,35);cyan.position.set(0,8,0);scene.add(cyan);
+const magenta=new THREE.PointLight(0xb985ff,32,28);magenta.position.set(-24,7,-18);scene.add(magenta);
+
+const group=new THREE.Group();scene.add(group);
+function mat(c,rough=.75,metal=.1,em=0){return new THREE.MeshStandardMaterial({color:c,roughness:rough,metalness:metal,emissive:em?new THREE.Color(c):0,emissiveIntensity:em})}
+function box(w,h,d,c,x,y,z,em=0){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat(c,.62,.28,em));m.position.set(x,y,z);m.castShadow=m.receiveShadow=true;group.add(m);return m}
+function cyl(r,h,c,x,y,z,em=0,rs=20){const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,rs),mat(c,.55,.22,em));m.position.set(x,y,z);m.castShadow=m.receiveShadow=true;group.add(m);return m}
+function sphere(r,c,x,y,z,em=0){const m=new THREE.Mesh(new THREE.SphereGeometry(r,24,16),mat(c,.7,.1,em));m.position.set(x,y,z);m.castShadow=m.receiveShadow=true;group.add(m);return m}
+function ring(r, tube,c,x,y,z,rotX=Math.PI/2,em=0){const m=new THREE.Mesh(new THREE.TorusGeometry(r,tube,14,64),mat(c,.45,.35,em));m.position.set(x,y,z);m.rotation.x=rotX;group.add(m);return m}
+
+// Ground and plaza
+const ground=new THREE.Mesh(new THREE.CircleGeometry(180,96),mat(0x0a1820,.92,.06));ground.rotation.x=-Math.PI/2;ground.receiveShadow=true;scene.add(ground);
+for(let i=0;i<9;i++){const a=i*Math.PI*2/9;const r=16+i%3*5;box(2.3,.25,26,0x102b38,Math.cos(a)*r,.12,Math.sin(a)*r);}
+cyl(10,.7,0x112a36,0,.35,0);ring(11,.22,0x53e2ff,0,.6,0,Math.PI/2,1);ring(6,.12,0x2d9aff,0,.7,0,Math.PI/2,1);
+
+// Futuristic settlement blocks
+function tower(x,z,s,c){box(5*s,20*s,5*s,c,x,10*s,z);for(let y=3;y<19*s;y+=3.1){for(let side of [-1,1])box(4.3*s,.42,0.14*s,0x52dfff,x,y,z+side*2.57*s,1);box(.14*s,.42,4.3*s,0xa37cff,x+2.57*s,y,z,1)}ring(3.4*s,.14,0x63eaff,x,20.3*s,z,Math.PI/2,1)}
+tower(-28,-23,1.05,0x142331);tower(-8,-37,.75,0x1a2239);tower(24,-30,1.15,0x12253a);tower(39,-2,.82,0x172837);tower(-38,13,.74,0x1c2438);tower(31,26,1.0,0x15253a);
+for(let i=0;i<16;i++){const x=-44+(i%8)*12,z=-5+Math.floor(i/8)*18;box(5,4,6,0x18262f,x,2.2,z);ring(1.8,.08,0x4cdfff,x,4.5,z,Math.PI/2,1)}
+
+// Elevated transit rails
+for(let z of [-15,15]){box(70,.32,.32,0x5be8ff,0,8,z,1);for(let x=-32;x<=32;x+=8)box(.25,7,.25,0x24475b,x,4,z)}
+const train=new THREE.Group();group.add(train);box(10,1.3,2.7,0x111923,0,8,z||-15);box(7,.6,2.3,0x54eaff,0,8.2,-15,1);
+
+// Central hologram / system event
+cyl(1.5,5,0x1a2b38,0,3.2,-6);ring(3,.18,0x5ff2ff,0,4.6,-6,Math.PI/2,1);ring(4.5,.08,0xb98aff,0,5.3,-6,Math.PI/2,1);sphere(1.1,0x63eaff,0,6.3,-6,1);box(.22,12,.22,0x5feaff,0,6,-6,1);
+
+// Trees / bioluminescent flora
+function tree(x,z,s){cyl(.28*s,4*s,0x172f2b,x,2*s,z);sphere(1.9*s,0x1b4b46,x,4.5*s,z,.15);sphere(1.3*s,0x2a7864,x+1*s,5*s,z,.15);sphere(1.2*s,0x6ef0d0,x-1*s,5.1*s,z,.3)}
+for(let i=0;i<24;i++){const a=i*.77,r=32+(i%4)*4;tree(Math.cos(a)*r,Math.sin(a)*r,.7+(i%3)*.18)}
+for(let i=0;i<28;i++){const a=i*1.11,r=10+(i%4)*2;const p=sphere(.18,0x78ffe0,Math.cos(a)*r,.4+Math.random()*1.4,Math.sin(a)*r,.8);p.scale.y=1.6}
+
+// Sky, sun, planets and stars
+const sky=new THREE.Mesh(new THREE.SphereGeometry(800,32,16),new THREE.MeshBasicMaterial({color:0x071c2b,side:THREE.BackSide}));scene.add(sky);
+const sunDisk=sphere(12,0xffc86b,-130,105,-240,1);const sunGlow=sphere(18,0xff9f4a,-130,105,-240,.7);sunGlow.material.transparent=true;sunGlow.material.opacity=.25;
+function planet(r,c,x,y,z,ringed=false){const p=new THREE.Mesh(new THREE.SphereGeometry(r,40,28),mat(c,.75,.02,0));p.position.set(x,y,z);scene.add(p);if(ringed)ring(r*1.55,.14,0x7ec5ff,x,y,z,.6,.6);}
+planet(26,0x24465f,110,48,-230,true);planet(10,0x6f4f8f,145,30,-205,false);planet(5,0x9e7843,-165,18,-160,false);
+for(let i=0;i<350;i++){const s=sphere(.08+(i%4)*.03,0xbfeeff,(Math.random()-.5)*600,30+Math.random()*240,(Math.random()-.5)*600,.9);s.material.emissiveIntensity=.7+Math.random()}
+
+// NPC / character display using audited CC0 Quaternius models
+const loader=new GLTFLoader();
+const maleUrl='https://raw.githubusercontent.com/ryanfitzpatrickio/threejs-playground/bec6cda747d14ae757946f21f5bb76bc719f9c0d/assets-source/universal-base-characters/gltf/Superhero_Male_FullBody.gltf';
+const femaleUrl='https://raw.githubusercontent.com/ryanfitzpatrickio/threejs-playground/bec6cda747d14ae757946f21f5bb76bc719f9c0d/assets-source/universal-base-characters/gltf/Superhero_Female_FullBody.gltf';
+let currentModel=null,camTarget=new THREE.Vector3(0,4,1);let autoOrbit=true,angle=.75;
+function styleModel(root,type,label){root.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;if(o.material){o.material=Array.isArray(o.material)?o.material.map(m=>m.clone()):o.material.clone();}}});
+const accent={humanMale:0x2fe4ff,humanFemale:0xbd7dff,aetherian:0x8a92ff,veyr:0x63ffc8,dual:0xd9dcff}[type];
+// layered futuristic outfit silhouette
+const outfit=new THREE.Group();root.add(outfit);const bust=box(1.3,.9,.72,0x121c27,0,.85,0);bust.position.set(0,.85,0);outfit.add(bust);const core=ring(.32,.08,accent,0,.88,.42,Math.PI/2,1);outfit.add(core);for(let s of [-1,1]){const sh=sphere(.24,accent,s*.78,1.16,0,1);outfit.add(sh);}
+const blade=box(.09,1.9,.12,accent,1.18,.05,.05,1);blade.rotation.z=-.16;outfit.add(blade);
+if(type==='aetherian'||type==='veyr'){for(let s of [-1,1]){const horn=new THREE.Mesh(new THREE.ConeGeometry(.15,.65,12),mat(accent,.5,.2,1));horn.position.set(s*.33,2.12,0);horn.rotation.z=s*.32;outfit.add(horn)}}
+if(type==='dual'){const halo=ring(.6,.06,accent,0,2.1,0,Math.PI/2,1);outfit.add(halo)}
+const tag=new THREE.Mesh(new THREE.PlaneGeometry(1.7,.22),new THREE.MeshBasicMaterial({color:accent,transparent:true,opacity:.7}));tag.position.set(0,2.35,0);tag.rotation.y=Math.PI;tag.userData.label=label;outfit.add(tag);
+return root}
+async function loadCharacter(url,type,pos,scale,label){try{const g=await loader.loadAsync(url);const root=g.scene.clone(true);root.scale.setScalar(scale);root.position.set(...pos);styleModel(root,type,label);group.add(root);if(type==='humanMale'&&label==='YOU'){currentModel=root;camTarget.copy(root.position).add(new THREE.Vector3(0,2,0));}return root}catch(e){console.warn('character load failed',type,e);return null}}
+const chars=[];
+Promise.all([
+loadCharacter(maleUrl,'humanMale',[0,0,10],1.9,'YOU'),
+loadCharacter(femaleUrl,'humanFemale',[-7,0,9],1.75,'NPC'),
+loadCharacter(maleUrl,'aetherian',[7,0,9],1.92,'SPECIES'),
+loadCharacter(femaleUrl,'veyr',[-14,0,6],1.8,'NPC'),
+loadCharacter(maleUrl,'dual',[14,0,6],1.85,'NPC')
+]).then(r=>chars.push(...r.filter(Boolean)));
+
+// Wildlife: real CC0 animated fox model source, near the plaza edge
+const foxUrl='https://raw.githubusercontent.com/SeloSlav/medieval-settlement-threejs/main/public/assets/models/wild-animals/quaternius-fox.gltf';
+loader.load(foxUrl,g=>{const f=g.scene;f.scale.setScalar(1.25);f.position.set(10,0,-3);f.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true}});group.add(f)},undefined,()=>{});
+
+// Camera interaction
+let dragging=false,lastX=0;addEventListener('pointerdown',e=>{dragging=true;lastX=e.clientX});addEventListener('pointerup',()=>dragging=false);addEventListener('pointermove',e=>{if(!dragging)return;angle-=(e.clientX-lastX)*.004;lastX=e.clientX});
+function toast(t){const el=document.getElementById('toast');el.textContent=t;el.classList.add('show');clearTimeout(window.__tt);window.__tt=setTimeout(()=>el.classList.remove('show'),1700)}
+function setDesign(type){const names={humanMale:'Human · Male · Wanderer',humanFemale:'Human · Female · Scholar',aetherian:'Aetherian · Male · Outcast',veyr:'Veyr · Female · Survivor',dual:'Dual-Soul · Androgynous · Unknown'};document.getElementById('designTitle').textContent=names[type];document.getElementById('playerName').textContent=names[type].split(' · ')[2];document.getElementById('playerMeta').textContent=names[type].replace(' · ',' / ');toast('Visual profile switched: '+names[type])}
+for(const b of document.querySelectorAll('.swatch'))b.onclick=()=>setDesign(b.dataset.type);
+document.getElementById('designBtn').onclick=()=>document.getElementById('designer').classList.add('show');document.getElementById('closeDesign').onclick=()=>document.getElementById('designer').classList.remove('show');document.getElementById('rotateBtn').onclick=()=>{autoOrbit=!autoOrbit;toast(autoOrbit?'Auto orbit ON':'Auto orbit OFF')};document.getElementById('worldBtn').onclick=()=>{autoOrbit=false;camera.position.set(34,18,34);camTarget.set(0,5,0);toast('World view: Aerion scale')} ;document.getElementById('enterBtn').onclick=()=>document.getElementById('enter').classList.add('hide');
+
+const clock=new THREE.Clock();function animate(){requestAnimationFrame(animate);const t=clock.getElapsedTime();if(autoOrbit)angle+=0.0009;const r=26;camera.position.lerp(new THREE.Vector3(camTarget.x+Math.cos(angle)*r,10.5+Math.sin(t*.23)*.45,camTarget.z+Math.sin(angle)*r),.035);camera.lookAt(camTarget);cyan.position.x=Math.cos(t)*4;cyan.position.z=Math.sin(t)*4;magenta.position.x=-20+Math.sin(t*.35)*5;for(let i=0;i<chars.length;i++){if(chars[i])chars[i].rotation.y=Math.sin(t*.4+i)*.05+(i===0?angle+Math.PI:0)}renderer.render(scene,camera)}animate();
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,1.6))});
+</script></body></html>
