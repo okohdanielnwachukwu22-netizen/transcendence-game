@@ -203,13 +203,6 @@ export class McpStdioClient {
     });
     await once(child, "spawn");
     try {
-      await this._rpc("server/discover", { _meta: MODERN_META }, true, 8000);
-      this.protocol = "2026-07-28";
-    } catch (error) {
-      if (!/method not found|unknown method|unsupported method|not implemented/i.test(String(error.message))) {
-        child.kill();
-        throw error;
-      }
       const initialized = await this._rpc("initialize", {
         protocolVersion: "2025-11-25",
         capabilities: {},
@@ -217,6 +210,9 @@ export class McpStdioClient {
       }, false, 8000);
       this.protocol = initialized.protocolVersion || "2025-11-25";
       this._notify("notifications/initialized", {});
+    } catch (error) {
+      child.kill();
+      throw new Error("PhotoCraft MCP initialization failed: " + error.message);
     }
     this.tools = null;
   }
