@@ -106,7 +106,7 @@ test("local API requires a listed origin, pairing, and an in-root file path", as
   });
   assert.equal(opened.status, 200);
   assert.equal(toolCalls[0].name, "doc_open");
-  assert.equal(toolCalls[0].args.path, path.join(root, "sample.psd"));
+  assert.equal(toolCalls[0].args.path, "sample.psd");
 
   const traversal = await fetch(base + "/api/photocraft/open", {
     method: "POST", headers: authHeaders, body: JSON.stringify({ path: "../outside.psd" })
