@@ -156,7 +156,7 @@ async function loadConfig() {
   return { readRoot, writeRoot, cliPath };
 }
 
-class McpStdioClient {
+export class McpStdioClient {
   constructor(config) {
     this.config = config;
     this.child = null;
