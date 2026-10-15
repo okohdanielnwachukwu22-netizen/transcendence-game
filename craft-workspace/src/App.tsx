@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Activity, AudioLines, BookOpenText, Boxes, CheckCircle2, ChevronRight, CircleHelp, Command, FileImage, FileText, FolderKanban, Grid2X2, House, Image, LayoutGrid, Lightbulb, MoreHorizontal, Moon, Palette, Pencil, Plus, Search, Settings, ShieldCheck, Sparkles, Sun, Upload, UserRound, Video, Workflow, Wrench, X, type LucideIcon } from "lucide-react";
 import { ALL_REPOSITORIES, AUDIT_STATUSES, CREATIVE_APPS } from "./registry";
 import { photocraftAdapter } from "./adapters/photocraft";
 import {
@@ -33,6 +34,17 @@ type ModalState =
   | null;
 
 type ActivityAction = { action: string; detail?: string };
+
+const GLYPH_ICONS: Record<string, LucideIcon> = {
+  "⌂": House, "▱": FolderKanban, "▤": FileText, "▦": Grid2X2, "◈": Sparkles,
+  "◷": Activity, "⌘": Command, "✳": Sparkles, "▧": Image, "☼": Sun,
+  "◇": Workflow, "▶": Video, "♫": AudioLines, "▥": LayoutGrid, "⌗": Grid2X2,
+  "↗": Workflow, "Aa": BookOpenText, "⇄": Workflow, "⚙": Settings, "◐": Moon,
+};
+function GlyphIcon({ glyph, size = 18 }: { glyph: string; size?: number }) {
+  const IconComponent = GLYPH_ICONS[glyph] || Sparkles;
+  return <IconComponent size={size} strokeWidth={1.8} aria-hidden="true" />;
+}
 
 const NAV_SECTIONS: Array<{ label: string; items: Array<{ page: Page; icon: string }> }> = [
   { label: "Workspace", items: [
@@ -386,8 +398,8 @@ export default function App() {
       <div className="project-thumb">▱</div>
       <div className="project-info"><b>{project.name}</b><small>Saved in this browser · {new Date(project.createdAt).toLocaleDateString()}</small></div>
       <span className="project-state">{project.description || "Workspace project"}</span>
-      <button className="icon-button" title="Rename" aria-label={"Rename " + project.name} onClick={() => beginRename(project)}>✎</button>
-      <button className="icon-button" title="Project options" aria-label={"Options for " + project.name} onClick={() => setModal({ type: "project-options", project })}>···</button>
+      <button className="icon-button" title="Rename" aria-label={"Rename " + project.name} onClick={() => beginRename(project)}><Pencil size={15} /></button>
+      <button className="icon-button" title="Project options" aria-label={"Options for " + project.name} onClick={() => setModal({ type: "project-options", project })}><MoreHorizontal size={16} /></button>
     </div>
   ));
 
@@ -412,11 +424,11 @@ export default function App() {
       <div className="section-head"><div><span className="section-index">01</span><h2>Pick up where you left off</h2></div><button className="text-button" onClick={() => navigate("Projects")}>All projects ↗</button></div>
       {projects.length
         ? <div className="project-list">{projectRows(projects.slice(-4).reverse())}</div>
-        : <div className="empty-row"><div className="empty-icon">▱</div><div><b>Your workspace is ready for a first project.</b><p>Create a project to keep related notes and work together.</p></div><button className="outline" onClick={openNewProject}>Create project ＋</button></div>}
+        : <div className="empty-row"><div className="empty-icon"><FolderKanban size={22} /></div><div><b>Your workspace is ready for a first project.</b><p>Create a project to keep related notes and work together.</p></div><button className="outline" onClick={openNewProject}>Create project <Plus size={15} /></button></div>}
     </section>
     <section className="section" style={{ border: 0 }}>
       <div className="section-head"><div><span className="section-index">02</span><h2>Creative applications</h2></div><button className="text-button" onClick={() => navigate("Applications")}>Browse library ↗</button></div>
-      <div className="apps-shortcuts">{CREATIVE_APPS.slice(0, 6).map((item) => <button className="app-shortcut" key={item.repo} onClick={() => setModal({ type: "application", app: item })}><div className="app-glyph">{item.icon}</div><span>{item.name}</span><small>{item.group}</small></button>)}</div>
+      <div className="apps-shortcuts">{CREATIVE_APPS.slice(0, 6).map((item) => <button className="app-shortcut" key={item.repo} onClick={() => setModal({ type: "application", app: item })}><div className="app-glyph"><GlyphIcon glyph={item.icon} size={22} /></div><span>{item.name}</span><small>{item.group}</small></button>)}</div>
     </section>
     <div className="bottom-status">
       <div><span className="status-ring" /> Local companion <b>{companionHealth?.paired ? "Paired" : "Not connected"}</b></div>
@@ -436,7 +448,7 @@ export default function App() {
       return <section className="library-group" key={group}>
         <div className="group-title">{group}<span>{String(groupApps.length).padStart(2, "0")}</span></div>
         {groupApps.map((item) => <button className="library-row" key={item.repo} onClick={() => setModal({ type: "application", app: item })}>
-          <div className="app-glyph">{item.icon}</div>
+          <div className="app-glyph"><GlyphIcon glyph={item.icon} size={22} /></div>
           <div className="library-info"><b>{item.name}</b><small>{item.description}</small></div>
           <StatusLabel>{auditStatuses[item.repo] || item.status}</StatusLabel><span>↗</span>
         </button>)}
@@ -450,7 +462,7 @@ export default function App() {
     <div className="section-head page-top"><div><h2>Your projects · {projects.length}</h2></div><button className="primary" onClick={openNewProject}>＋ New project</button></div>
     <div className="library-tools"><div className="inline-search"><span>⌕</span><input aria-label="Find a project" placeholder="Find a project" value={search} onChange={(event) => setSearch(event.target.value)} /></div></div>
     {filteredProjects.length ? <div className="project-list">{projectRows(filteredProjects)}</div> :
-      <div className="empty-large"><div className="large-icon">▱</div><h3>{projects.length ? "No matching projects" : "No projects yet"}</h3><p>{projects.length ? "Try another search." : "Create your first project to keep notes and related work together."}</p><button className="primary" onClick={openNewProject}>＋ Create project</button></div>}
+      <div className="empty-large"><div className="large-icon"><FolderKanban size={24} /></div><h3>{projects.length ? "No matching projects" : "No projects yet"}</h3><p>{projects.length ? "Try another search." : "Create your first project to keep notes and related work together."}</p><button className="primary" onClick={openNewProject}><Plus size={16} /> Create project</button></div>}
   </div>;
 
   const renderFiles = () => <div>
@@ -463,7 +475,7 @@ export default function App() {
       <button className="secondary" style={{ minHeight: 29 }} onClick={() => openSelectedFile(file)}>Open</button>
       <button className="icon-button" aria-label={"Remove " + file.name} onClick={() => { setFiles((current) => current.filter((_, i) => i !== index)); recordActivity({ action: "Removed selected file", detail: file.name }); }}>×</button>
     </div>)}</div>
-    {!files.length && <div className="empty-large"><div className="large-icon">▤</div><h3>No files selected</h3><p>Use “Add files” to choose local files. The browser accesses only the files you select.</p><button className="primary" onClick={() => filePickerRef.current?.click()}>＋ Add files</button></div>}
+    {!files.length && <div className="empty-large"><div className="large-icon"><FileText size={24} /></div><h3>No files selected</h3><p>Use “Add files” to choose local files. The browser accesses only the files you select.</p><button className="primary" onClick={() => filePickerRef.current?.click()}>＋ Add files</button></div>}
     <p style={{ fontSize: 10, color: "var(--quiet)", lineHeight: 1.7, marginTop: 16 }}>File selections last for this browser session only. The PhotoCraft companion uses a separate locally approved folder. Persistent shared assets need a verified storage layer and explicit configuration.</p>
   </div>;
 
@@ -504,7 +516,7 @@ export default function App() {
   const renderActivity = () => <div>
     <PageHeading page="Activity" />
     {activity.length ? <div className="diagnostic-table">{activity.map((entry) => <div className="diagnostic-row" key={entry.id}><div><b>{entry.action}</b><small>{entry.detail}</small></div><span className="status-text">{new Date(entry.createdAt).toLocaleString()}</span></div>)}</div> :
-      <div className="empty-large"><div className="large-icon">◷</div><h3>No activity recorded</h3><p>Create a project, select a file, or explore the application library to record activity.</p></div>}
+      <div className="empty-large"><div className="large-icon"><Activity size={24} /></div><h3>No activity recorded</h3><p>Create a project, select a file, or explore the application library to record activity.</p></div>}
     <div className="hero-actions"><button className="secondary" onClick={() => { if (window.confirm("Clear the local activity history?")) { setActivity([]); notify("Activity history cleared."); } }}>Clear activity</button></div>
   </div>;
 
@@ -556,7 +568,7 @@ export default function App() {
     if (!modal) return null;
     if (modal.type === "new-project") return <WorkspaceModal modal={modal} onClose={() => setModal(null)}>
       <form onSubmit={(event) => { event.preventDefault(); createProject(); }}>
-        <div className="panel-top"><span>NEW PROJECT</span><button type="button" className="icon-button" onClick={() => setModal(null)}>×</button></div>
+        <div className="panel-top"><span>NEW PROJECT</span><button type="button" className="icon-button" aria-label="Close dialog" onClick={() => setModal(null)}><X size={17} /></button></div>
         <h2>Start something good.</h2><p>Project metadata is saved in this browser.</p>
         <label htmlFor="projectName">Project name</label><input id="projectName" maxLength={100} placeholder="e.g. Spring campaign" value={projectName} onChange={(event) => setProjectName(event.target.value)} required autoFocus />
         <label htmlFor="projectDescription">Short note (optional)</label><input id="projectDescription" maxLength={180} placeholder="A few words about this project" value={projectDescription} onChange={(event) => setProjectDescription(event.target.value)} />
@@ -565,38 +577,38 @@ export default function App() {
     </WorkspaceModal>;
     if (modal.type === "rename-project") return <WorkspaceModal modal={modal} onClose={() => setModal(null)}>
       <form onSubmit={(event) => { event.preventDefault(); saveRename(modal.project); }}>
-        <div className="panel-top"><span>RENAME PROJECT</span><button type="button" className="icon-button" onClick={() => setModal(null)}>×</button></div>
+        <div className="panel-top"><span>RENAME PROJECT</span><button type="button" className="icon-button" aria-label="Close dialog" onClick={() => setModal(null)}><X size={17} /></button></div>
         <h2>Change project name</h2><label htmlFor="renameName">Project name</label><input id="renameName" maxLength={100} value={renameName} onChange={(event) => setRenameName(event.target.value)} required autoFocus />
         <div className="modal-actions"><button type="button" className="secondary" onClick={() => setModal(null)}>Cancel</button><button type="submit" className="primary">Save name</button></div>
       </form>
     </WorkspaceModal>;
     if (modal.type === "project-options") return <WorkspaceModal modal={modal} onClose={() => setModal(null)}>
-      <div className="panel-top"><span>PROJECT OPTIONS</span><button type="button" className="icon-button" onClick={() => setModal(null)}>×</button></div>
+      <div className="panel-top"><span>PROJECT OPTIONS</span><button type="button" className="icon-button" aria-label="Close dialog" onClick={() => setModal(null)}><X size={17} /></button></div>
       <h2>{modal.project.name}</h2><p>{modal.project.description || "Workspace project"}</p>
       <div className="modal-actions"><button type="button" className="secondary" onClick={() => beginRename(modal.project)}>Rename</button><button type="button" className="secondary" onClick={() => deleteProject(modal.project)}>Delete</button></div>
     </WorkspaceModal>;
     if (modal.type === "application") return <WorkspaceModal modal={modal} onClose={() => setModal(null)}>
-      <div className="panel-top"><span>APPLICATION DETAILS</span><button type="button" className="icon-button" onClick={() => setModal(null)}>×</button></div>
-      <div className="detail-icon">{modal.app.icon}</div><h2>{modal.app.name}</h2><p>{modal.app.description}</p>
+      <div className="panel-top"><span>APPLICATION DETAILS</span><button type="button" className="icon-button" aria-label="Close dialog" onClick={() => setModal(null)}><X size={17} /></button></div>
+      <div className="detail-icon"><GlyphIcon glyph={modal.app.icon} size={28} /></div><h2>{modal.app.name}</h2><p>{modal.app.description}</p>
       <div className="application-feature-list"><b>What this application is for</b><p>{modal.app.description}. Keep this type of work organised within the Craft Workspace suite.</p><b>Workspace availability</b><p>{modal.app.repo === "photocraft" ? "A local connection panel is available in AI Workspace. Start and pair the companion on the computer that has PhotoCraft installed to test the real application." : "This application is registered in the suite, but its native runtime has not yet been connected. We will not pretend a launch has succeeded."}</p></div>
       <div className="detail-meta"><span>Application</span><b>{modal.app.name}</b><span>Integration status</span><b>{auditStatuses[modal.app.repo] || modal.app.status}</b><span>Launch method</span><b>{modal.app.repo === "photocraft" ? "Local desktop companion · setup required" : "Integration required"}</b></div>
       <div className="notice">{modal.app.repo === "photocraft" ? "Open AI Workspace to pair the local PhotoCraft companion. PhotoCraft must be installed on your PC." : "Direct launching is not connected for this app yet. The next integration must connect the actual application, not open its source repository."}</div>
       <div className="modal-actions"><button type="button" className="secondary" onClick={() => setModal(null)}>Close</button><button type="button" className="primary" onClick={() => { const target = modal.app.repo === "photocraft" ? "AI Workspace" : "Diagnostics"; setModal(null); navigate(target as Page); }}>{modal.app.repo === "photocraft" ? "Open connection panel" : "View integration status"} ↗</button></div>
     </WorkspaceModal>;
     if (modal.type === "image-preview") return <WorkspaceModal modal={modal} onClose={() => setModal(null)}>
-      <div className="panel-top"><span>IMAGE PREVIEW</span><button type="button" className="icon-button" onClick={() => setModal(null)}>×</button></div>
+      <div className="panel-top"><span>IMAGE PREVIEW</span><button type="button" className="icon-button" aria-label="Close dialog" onClick={() => setModal(null)}><X size={17} /></button></div>
       <h2>{modal.file.name}</h2><p>{formatBytes(modal.file.size)} · Original stays on your device.</p>
       <img src={modal.url} alt={modal.file.name} style={{ display: "block", maxWidth: "100%", maxHeight: "50vh", margin: "10px auto" }} />
       <div className="modal-actions"><button type="button" className="secondary" onClick={() => setModal(null)}>Close</button></div>
     </WorkspaceModal>;
     if (modal.type === "help") return <WorkspaceModal modal={modal} onClose={() => setModal(null)}>
-      <div className="panel-top"><span>ABOUT CRAFT WORKSPACE</span><button type="button" className="icon-button" onClick={() => setModal(null)}>×</button></div>
+      <div className="panel-top"><span>ABOUT CRAFT WORKSPACE</span><button type="button" className="icon-button" aria-label="Close dialog" onClick={() => setModal(null)}><X size={17} /></button></div>
       <h2>A creative workspace in progress.</h2><p>The workspace shell is React/TypeScript. The local PhotoCraft pilot has automated security/transport tests, but it still needs the actual PhotoCraft release and a real Windows end-to-end test.</p>
       <div className="notice">Application launching, cloud/local AI and shared cloud storage are not fully connected. The other creative applications are not marked integrated.</div>
       <div className="modal-actions"><button type="button" className="primary" onClick={() => setModal(null)}>Got it</button></div>
     </WorkspaceModal>;
     if (modal.type === "profile") return <WorkspaceModal modal={modal} onClose={() => setModal(null)}>
-      <div className="panel-top"><span>WORKSPACE PROFILE</span><button type="button" className="icon-button" onClick={() => setModal(null)}>×</button></div>
+      <div className="panel-top"><span>WORKSPACE PROFILE</span><button type="button" className="icon-button" aria-label="Close dialog" onClick={() => setModal(null)}><X size={17} /></button></div>
       <div className="profile-edit-mark">{(profileNameDraft.trim() || profileName).slice(0, 2).toUpperCase()}</div>
       <h2>Your workspace profile</h2>
       <p>This profile is stored locally in this browser. Sign-in and cloud sync are not configured yet.</p>
@@ -610,7 +622,7 @@ export default function App() {
       </form>
     </WorkspaceModal>;
     if (modal.type === "clear-data") return <WorkspaceModal modal={modal} onClose={() => setModal(null)}>
-      <div className="panel-top"><span>CLEAR LOCAL WORKSPACE</span><button type="button" className="icon-button" onClick={() => setModal(null)}>×</button></div>
+      <div className="panel-top"><span>CLEAR LOCAL WORKSPACE</span><button type="button" className="icon-button" aria-label="Close dialog" onClick={() => setModal(null)}><X size={17} /></button></div>
       <h2>Clear saved workspace data?</h2><p>This removes project records, activity and audit statuses from this browser. It cannot be undone.</p>
       <div className="modal-actions"><button type="button" className="secondary" onClick={() => setModal(null)}>Cancel</button><button type="button" className="primary" onClick={clearLocalData}>Clear saved data</button></div>
     </WorkspaceModal>;
@@ -619,26 +631,26 @@ export default function App() {
 
   return <div className={"app" + (theme === "light" ? " light" : "")}>
     <aside className="rail">
-      <button className="brand" onClick={() => navigate("Home")} aria-label="Craft Workspace home"><span className="brand-mark">◈</span><span className="brand-name">craft<span className="brand-light">workspace</span></span></button>
-      <div>{NAV_SECTIONS.map((section) => <div className="nav-group" key={section.label}><div className="nav-label">{section.label}</div>{section.items.map((item) => <button key={item.page} className={"nav-item" + (page === item.page ? " active" : "")} onClick={() => navigate(item.page)}><span className="nav-icon">{item.icon}</span><span className="nav-label-text">{item.page}</span></button>)}</div>)}</div>
+      <button className="brand" onClick={() => navigate("Home")} aria-label="Craft Workspace home"><span className="brand-mark"><Sparkles size={20} /></span><span className="brand-name">craft<span className="brand-light">workspace</span></span></button>
+      <div>{NAV_SECTIONS.map((section) => <div className="nav-group" key={section.label}><div className="nav-label">{section.label}</div>{section.items.map((item) => <button key={item.page} className={"nav-item" + (page === item.page ? " active" : "")} onClick={() => navigate(item.page)}><span className="nav-icon"><GlyphIcon glyph={item.icon} size={17} /></span><span className="nav-label-text">{item.page}</span></button>)}</div>)}</div>
       <div className="rail-bottom">
-        <button className="nav-item" onClick={toggleTheme}><span className="nav-icon">◐</span><span className="nav-label-text">{theme === "light" ? "Dark appearance" : "Light appearance"}</span></button>
-        <button className={"nav-item" + (page === "Settings" ? " active" : "")} onClick={() => navigate("Settings")}><span className="nav-icon">⚙</span><span className="nav-label-text">Settings</span></button>
-        <button className="profile profile-button" type="button" onClick={() => { setProfileNameDraft(profileName); setProfileEmailDraft(profileEmail); setModal({ type: "profile" }); }} aria-label="Open workspace profile"><div className="profile-dot">{(profileName.trim() || "CW").slice(0, 2).toUpperCase()}</div><div className="profile-meta"><b>{profileName}</b><small>{profileEmail || "Local profile · click to edit"}</small></div><span className="profile-chevron">›</span></button>
+        <button className="nav-item" onClick={toggleTheme}><span className="nav-icon"><Moon size={17} /></span><span className="nav-label-text">{theme === "light" ? "Dark appearance" : "Light appearance"}</span></button>
+        <button className={"nav-item" + (page === "Settings" ? " active" : "")} onClick={() => navigate("Settings")}><span className="nav-icon"><Settings size={17} /></span><span className="nav-label-text">Settings</span></button>
+        <button className="profile profile-button" type="button" onClick={() => { setProfileNameDraft(profileName); setProfileEmailDraft(profileEmail); setModal({ type: "profile" }); }} aria-label="Open workspace profile"><div className="profile-dot">{(profileName.trim() || "CW").slice(0, 2).toUpperCase()}</div><div className="profile-meta"><b>{profileName}</b><small>{profileEmail || "Local profile · click to edit"}</small></div><span className="profile-chevron"><ChevronRight size={16} /></span></button>
       </div>
     </aside>
     <main className="main">
       <header className="topbar">
         <div className="crumb"><span>Craft Workspace</span><span className="slash">/</span><b>{page}</b></div>
-        <div className="top-actions"><button className="search-trigger" onClick={() => { setPaletteOpen(true); setPaletteQuery(""); }}><span>⌕</span><span>Search anything...</span><kbd>Ctrl K</kbd></button><span className="top-sep" /><button className="icon-button" title="Help" aria-label="Help" onClick={() => setModal({ type: "help" })}>ⓘ</button><button className="icon-button" title="Diagnostics" aria-label="Diagnostics" onClick={() => navigate("Diagnostics")}>⎈</button><button className="profile-top-button" title="Workspace profile" aria-label="Workspace profile" onClick={() => { setProfileNameDraft(profileName); setProfileEmailDraft(profileEmail); setModal({ type: "profile" }); }}><span className="profile-dot">{(profileName.trim() || "CW").slice(0, 2).toUpperCase()}</span></button></div>
+        <div className="top-actions"><button className="search-trigger" onClick={() => { setPaletteOpen(true); setPaletteQuery(""); }}><Search size={16} /><span>Search anything...</span><kbd>Ctrl K</kbd></button><span className="top-sep" /><button className="icon-button" title="Help" aria-label="Help" onClick={() => setModal({ type: "help" })}><CircleHelp size={17} /></button><button className="icon-button" title="Diagnostics" aria-label="Diagnostics" onClick={() => navigate("Diagnostics")}><ShieldCheck size={17} /></button><button className="profile-top-button" title="Workspace profile" aria-label="Workspace profile" onClick={() => { setProfileNameDraft(profileName); setProfileEmailDraft(profileEmail); setModal({ type: "profile" }); }}><span className="profile-dot">{(profileName.trim() || "CW").slice(0, 2).toUpperCase()}</span></button></div>
       </header>
       <div className="content">{renderPage()}</div>
     </main>
     {renderModal()}
     {paletteOpen && <div className="overlay palette-overlay" onMouseDown={(event) => { if (event.target === event.currentTarget) setPaletteOpen(false); }}><div className="palette">
-      <div className="palette-search"><span>⌕</span><input autoFocus placeholder="Search pages and applications..." value={paletteQuery} onChange={(event) => setPaletteQuery(event.target.value)} /><kbd>ESC</kbd><button className="icon-button" aria-label="Close search" onClick={() => setPaletteOpen(false)}>×</button></div>
+      <div className="palette-search"><Search size={17} /><input autoFocus placeholder="Search pages and applications..." value={paletteQuery} onChange={(event) => setPaletteQuery(event.target.value)} /><kbd>ESC</kbd><button className="icon-button" aria-label="Close search" onClick={() => setPaletteOpen(false)}><X size={16} /></button></div>
       <div className="palette-label">NAVIGATION & APPLICATIONS</div>
-      <div>{filteredPalettePages.map((item) => <button className="palette-item" key={item} onClick={() => navigate(item)}>⌘ {item}<span>Open page ↵</span></button>)}{filteredPaletteApps.map((item) => <button className="palette-item" key={item.repo} onClick={() => { setPaletteOpen(false); setModal({ type: "application", app: item }); }}>{item.icon} {item.name}<small>Application</small></button>)}</div>
+      <div>{filteredPalettePages.map((item) => <button className="palette-item" key={item} onClick={() => navigate(item)}><Command size={14} /> {item}<span>Open page <ChevronRight size={13} /></span></button>)}{filteredPaletteApps.map((item) => <button className="palette-item" key={item.repo} onClick={() => { setPaletteOpen(false); setModal({ type: "application", app: item }); }><GlyphIcon glyph={item.icon} size={16} /> {item.name}<small>Application</small></button>)}</div>
     </div></div>}
     {toast && <div className="toast" role="status">{toast}</div>}
   </div>;
