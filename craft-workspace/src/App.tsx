@@ -29,6 +29,7 @@ type ModalState =
   | { type: "image-preview"; file: File; url: string }
   | { type: "help" }
   | { type: "clear-data" }
+  | { type: "profile" }
   | null;
 
 type ActivityAction = { action: string; detail?: string };
@@ -121,6 +122,10 @@ export default function App() {
   const [photoPath, setPhotoPath] = useState("");
   const [photoOutput, setPhotoOutput] = useState("");
   const [photoPreview, setPhotoPreview] = useState("");
+  const [profileName, setProfileName] = useState(() => { try { return localStorage.getItem("craft-workspace-profile-name") || "Workspace owner"; } catch { return "Workspace owner"; } });
+  const [profileEmail, setProfileEmail] = useState(() => { try { return localStorage.getItem("craft-workspace-profile-email") || ""; } catch { return ""; } });
+  const [profileNameDraft, setProfileNameDraft] = useState(profileName);
+  const [profileEmailDraft, setProfileEmailDraft] = useState(profileEmail);
   const filePickerRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => { writeLocal("theme", theme); }, [theme]);
@@ -518,7 +523,7 @@ export default function App() {
       <div className="section-head"><div><h2>Repository registry · 21</h2></div><span style={{ color: "var(--quiet)", fontSize: 10 }}>{updatedStatuses} status updates · {verifiedStatuses} verified</span></div>
       <div className="library-tools"><div className="inline-search"><span>⌕</span><input aria-label="Search repositories" placeholder="Search repository names" value={search} onChange={(event) => setSearch(event.target.value)} /></div><span>Audit status</span></div>
       <div className="diagnostic-table">{filteredRepos.map((item) => <div className="diagnostic-row" key={item.repo}>
-        <div><b>{item.name}</b><small>{item.description} · <a href={"https://github.com/storytold/" + item.repo} target="_blank" rel="noreferrer">storytold/{item.repo}</a></small></div>
+        <div><b>{item.name}</b><small>{item.description} · Registered in Craft Workspace</small></div>
         <label className="status-picker"><span className="hide">Audit status for {item.name}</span><select value={auditStatuses[item.repo] || item.status} aria-label={"Audit status for " + item.name} onChange={(event) => { const value = event.target.value as AuditStatus; setAuditStatuses((current) => ({ ...current, [item.repo]: value })); recordActivity({ action: "Updated repository audit tracking", detail: item.repo + ": " + value }); notify("Audit tracking updated. This does not run a test."); }}>
           {AUDIT_STATUSES.map((status) => <option key={status} value={status}>{status}</option>)}
         </select></label>
@@ -573,9 +578,10 @@ export default function App() {
     if (modal.type === "application") return <WorkspaceModal modal={modal} onClose={() => setModal(null)}>
       <div className="panel-top"><span>APPLICATION DETAILS</span><button type="button" className="icon-button" onClick={() => setModal(null)}>×</button></div>
       <div className="detail-icon">{modal.app.icon}</div><h2>{modal.app.name}</h2><p>{modal.app.description}</p>
-      <div className="detail-meta"><span>Repository</span><a href={"https://github.com/storytold/" + modal.app.repo} target="_blank" rel="noreferrer">storytold/{modal.app.repo} ↗</a><span>Audit status</span><b>{auditStatuses[modal.app.repo] || modal.app.status}</b><span>Launch mode</span><b>Not configured</b></div>
-      <div className="notice">This catalogue entry does not mean the application is installed, built, launched, or integrated. Source and adapter verification are required.</div>
-      <div className="modal-actions"><button type="button" className="secondary" onClick={() => setModal(null)}>Close</button><a className="primary" href={"https://github.com/storytold/" + modal.app.repo} target="_blank" rel="noreferrer">Open source ↗</a></div>
+      <div className="application-feature-list"><b>What this application is for</b><p>${modal.app.description}. Keep this type of work organised within the Craft Workspace suite.</p><b>Workspace availability</b><p>{modal.app.repo === "photocraft" ? "A local connection panel is available in AI Workspace. Start and pair the companion on the computer that has PhotoCraft installed to test the real application." : "This application is registered in the suite, but its native runtime has not yet been connected. We will not pretend a launch has succeeded."}</p></div>
+      <div className="detail-meta"><span>Application</span><b>{modal.app.name}</b><span>Integration status</span><b>{auditStatuses[modal.app.repo] || modal.app.status}</b><span>Launch method</span><b>{modal.app.repo === "photocraft" ? "Local desktop companion · setup required" : "Integration required"}</b></div>
+      <div className="notice">{modal.app.repo === "photocraft" ? "Open AI Workspace to pair the local PhotoCraft companion. PhotoCraft must be installed on your PC." : "Direct launching is not connected for this app yet. The next integration must connect the actual application, not open its source repository."}</div>
+      <div className="modal-actions"><button type="button" className="secondary" onClick={() => setModal(null)}>Close</button><button type="button" className="primary" onClick={() => { const target = modal.app.repo === "photocraft" ? "AI Workspace" : "Diagnostics"; setModal(null); navigate(target as Page); }}>{modal.app.repo === "photocraft" ? "Open connection panel" : "View integration status"} ↗</button></div>
     </WorkspaceModal>;
     if (modal.type === "image-preview") return <WorkspaceModal modal={modal} onClose={() => setModal(null)}>
       <div className="panel-top"><span>IMAGE PREVIEW</span><button type="button" className="icon-button" onClick={() => setModal(null)}>×</button></div>
@@ -588,6 +594,20 @@ export default function App() {
       <h2>A creative workspace in progress.</h2><p>The workspace shell is React/TypeScript. The local PhotoCraft pilot has automated security/transport tests, but it still needs the actual PhotoCraft release and a real Windows end-to-end test.</p>
       <div className="notice">Application launching, cloud/local AI and shared cloud storage are not fully connected. The other creative applications are not marked integrated.</div>
       <div className="modal-actions"><button type="button" className="primary" onClick={() => setModal(null)}>Got it</button></div>
+    </WorkspaceModal>;
+    if (modal.type === "profile") return <WorkspaceModal modal={modal} onClose={() => setModal(null)}>
+      <div className="panel-top"><span>WORKSPACE PROFILE</span><button type="button" className="icon-button" onClick={() => setModal(null)}>×</button></div>
+      <div className="profile-edit-mark">{(profileNameDraft.trim() || profileName).slice(0, 2).toUpperCase()}</div>
+      <h2>Your workspace profile</h2>
+      <p>This profile is stored locally in this browser. Sign-in and cloud sync are not configured yet.</p>
+      <form onSubmit={(event) => { event.preventDefault(); const name = profileNameDraft.trim() || "Workspace owner"; const email = profileEmailDraft.trim(); setProfileName(name); setProfileEmail(email); try { localStorage.setItem("craft-workspace-profile-name", name); localStorage.setItem("craft-workspace-profile-email", email); } catch {} recordActivity({ action: "Updated local profile", detail: name }); setModal(null); notify("Profile saved on this device."); }}>
+        <label className="field-label" htmlFor="profile-name">Display name</label>
+        <input id="profile-name" className="field-input" value={profileNameDraft} onChange={(event) => setProfileNameDraft(event.target.value)} maxLength={80} required />
+        <label className="field-label" htmlFor="profile-email">Email (optional)</label>
+        <input id="profile-email" className="field-input" type="email" value={profileEmailDraft} onChange={(event) => setProfileEmailDraft(event.target.value)} maxLength={160} placeholder="you@example.com" />
+        <div className="notice">This does not create an account or authenticate you with a server.</div>
+        <div className="modal-actions"><button type="button" className="secondary" onClick={() => setModal(null)}>Cancel</button><button type="submit" className="primary">Save profile</button></div>
+      </form>
     </WorkspaceModal>;
     if (modal.type === "clear-data") return <WorkspaceModal modal={modal} onClose={() => setModal(null)}>
       <div className="panel-top"><span>CLEAR LOCAL WORKSPACE</span><button type="button" className="icon-button" onClick={() => setModal(null)}>×</button></div>
@@ -604,13 +624,13 @@ export default function App() {
       <div className="rail-bottom">
         <button className="nav-item" onClick={toggleTheme}><span className="nav-icon">◐</span><span className="nav-label-text">{theme === "light" ? "Dark appearance" : "Light appearance"}</span></button>
         <button className={"nav-item" + (page === "Settings" ? " active" : "")} onClick={() => navigate("Settings")}><span className="nav-icon">⚙</span><span className="nav-label-text">Settings</span></button>
-        <div className="profile"><div className="profile-dot">CW</div><div className="profile-meta"><b>Local workspace</b><small>Saved in this browser</small></div></div>
+        <button className="profile profile-button" type="button" onClick={() => { setProfileNameDraft(profileName); setProfileEmailDraft(profileEmail); setModal({ type: "profile" }); }} aria-label="Open workspace profile"><div className="profile-dot">{(profileName.trim() || "CW").slice(0, 2).toUpperCase()}</div><div className="profile-meta"><b>{profileName}</b><small>{profileEmail || "Local profile · click to edit"}</small></div><span className="profile-chevron">›</span></button>
       </div>
     </aside>
     <main className="main">
       <header className="topbar">
         <div className="crumb"><span>Craft Workspace</span><span className="slash">/</span><b>{page}</b></div>
-        <div className="top-actions"><button className="search-trigger" onClick={() => { setPaletteOpen(true); setPaletteQuery(""); }}><span>⌕</span><span>Search anything...</span><kbd>Ctrl K</kbd></button><span className="top-sep" /><button className="icon-button" title="Help" aria-label="Help" onClick={() => setModal({ type: "help" })}>ⓘ</button><button className="icon-button" title="Diagnostics" aria-label="Diagnostics" onClick={() => navigate("Diagnostics")}>⎈</button></div>
+        <div className="top-actions"><button className="search-trigger" onClick={() => { setPaletteOpen(true); setPaletteQuery(""); }}><span>⌕</span><span>Search anything...</span><kbd>Ctrl K</kbd></button><span className="top-sep" /><button className="icon-button" title="Help" aria-label="Help" onClick={() => setModal({ type: "help" })}>ⓘ</button><button className="icon-button" title="Diagnostics" aria-label="Diagnostics" onClick={() => navigate("Diagnostics")}>⎈</button><button className="profile-top-button" title="Workspace profile" aria-label="Workspace profile" onClick={() => { setProfileNameDraft(profileName); setProfileEmailDraft(profileEmail); setModal({ type: "profile" }); }}><span className="profile-dot">{(profileName.trim() || "CW").slice(0, 2).toUpperCase()}</span></button></div>
       </header>
       <div className="content">{renderPage()}</div>
     </main>
