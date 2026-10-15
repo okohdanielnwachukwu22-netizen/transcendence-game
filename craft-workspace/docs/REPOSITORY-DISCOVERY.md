@@ -54,7 +54,7 @@ Security limitation from PhotoCraft's own MCP docs: read/write roots constrain f
 ## Deployment and verification state
 
 - React/TypeScript: **typecheck passed**; Vite production build **passed** in the connected Node 22 sandbox.
-- Automated checks: **9 passed, 0 failed** (three registry checks plus six local-companion origin, pairing, file-boundary and MCP transport checks).
+- Automated checks: **14 passed, 0 failed** (three repository registry checks, three adapter/provider/schema security checks, and six local-companion origin, pairing, file-boundary and MCP transport checks).
 - Vercel deployment: API reports **READY**, but the authenticated live-page fetch was denied by the current Vercel connection scope and both browser URL fetches were inaccessible. Thus live-browser smoke verification is **blocked/unverified**; deployment readiness is not equivalent to an observed page-level smoke test.
 - No build or smoke-test result is claimed for any of the 21 upstream apps.
-- No Supabase schema or data was changed. The existing Supabase project is named TRANSCENDENCE and appears unrelated to this workspace; project metadata is kept locally for now.
+- No Supabase schema or data was changed. A separate owner-scoped schema draft was added to the branch but was not applied. The existing Supabase project is named TRANSCENDENCE and appears unrelated to this workspace; project metadata is kept locally for now.
