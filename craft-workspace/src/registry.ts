@@ -3,20 +3,20 @@ import type { AuditStatus, RegisteredApp } from "./types";
 const NOT_INSPECTED: AuditStatus = "Not inspected";
 
 export const CREATIVE_APPS: RegisteredApp[] = [
-  { name: "ArtCraft", description: "Image and visual creation workflows", repo: "artcraft", icon: "✳", group: "Image & visual", kind: "creative", status: NOT_INSPECTED },
-  { name: "PhotoCraft", description: "Raster photo editing and image manipulation", repo: "photocraft", icon: "▧", group: "Image & visual", kind: "creative", status: NOT_INSPECTED },
-  { name: "ArtCraft-X", description: "Creative image and media workflows", repo: "artcraftx", icon: "◈", group: "Image & visual", kind: "creative", status: NOT_INSPECTED },
-  { name: "LightCraft", description: "Photo-library organization and RAW development", repo: "lightcraft", icon: "☼", group: "Image & visual", kind: "creative", status: NOT_INSPECTED },
-  { name: "VectorCraft", description: "Vector illustration and SVG workflows", repo: "vectorcraft", icon: "◇", group: "Image & visual", kind: "creative", status: NOT_INSPECTED },
-  { name: "FilmCraft", description: "Video editing, colour grading and sound", repo: "filmcraft", icon: "▶", group: "Video, motion & audio", kind: "creative", status: NOT_INSPECTED },
-  { name: "EffectCraft", description: "Motion graphics and visual effects", repo: "effectcraft", icon: "▱", group: "Video, motion & audio", kind: "creative", status: NOT_INSPECTED },
-  { name: "SoundCraft", description: "Audio recording, editing and mixing", repo: "soundcraft", icon: "♫", group: "Video, motion & audio", kind: "creative", status: NOT_INSPECTED },
-  { name: "DesignCraft", description: "Graphic design, page layout and publishing", repo: "designcraft", icon: "▦", group: "Design & publishing", kind: "creative", status: NOT_INSPECTED },
-  { name: "WordCraft", description: "Document writing and formatting", repo: "wordcraft", icon: "▤", group: "Design & publishing", kind: "creative", status: NOT_INSPECTED },
-  { name: "DeckCraft", description: "Presentation creation and slide decks", repo: "deckcraft", icon: "▥", group: "Design & publishing", kind: "creative", status: NOT_INSPECTED },
-  { name: "PDFCraft", description: "PDF viewing and document workflows", repo: "pdfcraft", icon: "▧", group: "Design & publishing", kind: "creative", status: NOT_INSPECTED },
-  { name: "CADCraft", description: "CAD and technical drawing", repo: "cadcraft", icon: "⌗", group: "Technical & structured work", kind: "creative", status: NOT_INSPECTED },
-  { name: "GridCraft", description: "Spreadsheets and structured-data work", repo: "gridcraft", icon: "▦", group: "Technical & structured work", kind: "creative", status: NOT_INSPECTED },
+  { name: "ArtCraft", description: "Image and visual creation workflows", repo: "artcraft", icon: "✳", group: "Image & visual", kind: "creative", status: NOT_INSPECTED, launchUrl: "https://app.getartcraft.com/", launchState: "web" },
+  { name: "PhotoCraft", description: "Raster photo editing and image manipulation", repo: "photocraft", icon: "▧", group: "Image & visual", kind: "creative", status: NOT_INSPECTED, launchUrl: "https://getartcraft.com/apps/photocraft", launchState: "official-page" },
+  { name: "ArtCraft-X", description: "Creative image and media workflows", repo: "artcraftx", icon: "◈", group: "Image & visual", kind: "creative", status: NOT_INSPECTED, launchUrl: "https://getartcraft.com/apps", launchState: "coming-soon" },
+  { name: "LightCraft", description: "Photo-library organization and RAW development", repo: "lightcraft", icon: "☼", group: "Image & visual", kind: "creative", status: NOT_INSPECTED, launchUrl: "https://getartcraft.com/apps/lightcraft", launchState: "official-page" },
+  { name: "VectorCraft", description: "Vector illustration and SVG workflows", repo: "vectorcraft", icon: "◇", group: "Image & visual", kind: "creative", status: NOT_INSPECTED, launchUrl: "https://getartcraft.com/apps/vectorcraft", launchState: "official-page" },
+  { name: "FilmCraft", description: "Video editing, colour grading and sound", repo: "filmcraft", icon: "▶", group: "Video, motion & audio", kind: "creative", status: NOT_INSPECTED, launchUrl: "https://getartcraft.com/apps/filmcraft", launchState: "official-page" },
+  { name: "EffectCraft", description: "Motion graphics and visual effects", repo: "effectcraft", icon: "▱", group: "Video, motion & audio", kind: "creative", status: NOT_INSPECTED, launchUrl: "https://getartcraft.com/apps/effectcraft", launchState: "official-page" },
+  { name: "SoundCraft", description: "Audio recording, editing and mixing", repo: "soundcraft", icon: "♫", group: "Video, motion & audio", kind: "creative", status: NOT_INSPECTED, launchUrl: "https://getartcraft.com/apps/soundcraft", launchState: "official-page" },
+  { name: "DesignCraft", description: "Graphic design, page layout and publishing", repo: "designcraft", icon: "▦", group: "Design & publishing", kind: "creative", status: NOT_INSPECTED, launchUrl: "https://getartcraft.com/apps/designcraft", launchState: "official-page" },
+  { name: "WordCraft", description: "Document writing and formatting", repo: "wordcraft", icon: "▤", group: "Design & publishing", kind: "creative", status: NOT_INSPECTED, launchUrl: "https://getartcraft.com/apps/wordcraft", launchState: "official-page" },
+  { name: "DeckCraft", description: "Presentation creation and slide decks", repo: "deckcraft", icon: "▥", group: "Design & publishing", kind: "creative", status: NOT_INSPECTED, launchUrl: "https://getartcraft.com/apps/deckcraft", launchState: "official-page" },
+  { name: "PDFCraft", description: "PDF viewing and document workflows", repo: "pdfcraft", icon: "▧", group: "Design & publishing", kind: "creative", status: NOT_INSPECTED, launchUrl: "https://getartcraft.com/apps/pdfcraft", launchState: "official-page" },
+  { name: "CADCraft", description: "CAD and technical drawing", repo: "cadcraft", icon: "⌗", group: "Technical & structured work", kind: "creative", status: NOT_INSPECTED, launchUrl: "https://getartcraft.com/apps/cadcraft", launchState: "official-page" },
+  { name: "GridCraft", description: "Spreadsheets and structured-data work", repo: "gridcraft", icon: "▦", group: "Technical & structured work", kind: "creative", status: NOT_INSPECTED, launchUrl: "https://getartcraft.com/apps/gridcraft", launchState: "official-page" },
 ];
 
 export const SUPPORT_REPOSITORIES: RegisteredApp[] = [
