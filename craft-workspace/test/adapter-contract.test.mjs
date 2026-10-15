@@ -19,6 +19,7 @@ test("AI provider registry enforces data-classification compatibility", () => {
   assert.ok(provider.includes("sendsDataOffDevice"));
   assert.ok(provider.includes("not approved for this data classification"));
   assert.ok(provider.includes("The selected AI provider is not configured"));
+  assert.ok(provider.includes("Explicit approval is required before sending project metadata or private file content off this device"));
 });
 test("only PhotoCraft has an adapter descriptor until other apps are verified", () => {
   assert.ok(adapterRegistry.includes("[photocraftAdapter.descriptor]"));
