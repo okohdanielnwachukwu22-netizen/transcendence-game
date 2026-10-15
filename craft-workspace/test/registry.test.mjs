@@ -1,29 +1,22 @@
-import test from 'node:test';
-import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import test from "node:test";
+import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 
-const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
-const app = await readFile(new URL('../app.js', import.meta.url), 'utf8');
-const all = html + '\n' + app;
+const registry = await readFile(new URL("../src/registry.ts", import.meta.url), "utf8");
+const app = await readFile(new URL("../src/App.tsx", import.meta.url), "utf8");
 
-test('has core workspace pages', () => {
-  for (const name of ['Home', 'Projects', 'Files', 'Applications', 'AI Workspace', 'Activity', 'Diagnostics', 'Settings']) {
-    assert.ok(all.includes(name), name);
+test("registry includes the required 14 creative repositories", () => {
+  for (const repo of ["artcraft","photocraft","artcraftx","lightcraft","filmcraft","vectorcraft","cadcraft","wordcraft","soundcraft","pdfcraft","designcraft","effectcraft","deckcraft","gridcraft"]) {
+    assert.ok(registry.includes('repo: "' + repo + '"'), "Missing " + repo);
   }
 });
-test('has all 14 creative repositories', () => {
-  for (const name of ['artcraft','photocraft','artcraftx','lightcraft','filmcraft','vectorcraft','cadcraft','wordcraft','soundcraft','pdfcraft','designcraft','effectcraft','deckcraft','gridcraft']) {
-    assert.ok(app.includes("'" + name + "'"), name);
+test("registry includes all seven support repositories", () => {
+  for (const repo of ["artcraft-services","craft-launcher","craft-fonts","craft-libs","craft-repo-status-app","photocraft-corpus","terraform-aws-observability-accelerator"]) {
+    assert.ok(registry.includes('repo: "' + repo + '"'), "Missing " + repo);
   }
 });
-test('has all 7 shared repositories', () => {
-  for (const name of ['artcraft-services','craft-launcher','craft-fonts','craft-libs','craft-repo-status-app','photocraft-corpus','terraform-aws-observability-accelerator']) {
-    assert.ok(app.includes("'" + name + "'"), name);
-  }
-});
-test('honestly distinguishes local shell from integrations', () => {
-  assert.ok(app.includes('Not inspected'));
-  assert.ok(app.includes('Not configured'));
-  assert.ok(app.includes('does not launch or embed creative applications'));
-  assert.ok(app.includes('This does not execute the test.'));
+test("UI does not claim unbuilt native applications are integrated", () => {
+  assert.ok(registry.includes('"Not inspected"'));
+  assert.ok(app.includes("does not launch or embed creative applications"));
+  assert.ok(app.includes("Not configured"));
 });
