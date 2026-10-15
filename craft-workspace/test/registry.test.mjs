@@ -17,6 +17,6 @@ test("registry includes all seven support repositories", () => {
 });
 test("UI does not claim unbuilt native applications are integrated", () => {
   assert.ok(registry.includes('"Not inspected"'));
-  assert.ok(app.includes("does not launch or embed creative applications"));
+  assert.ok(app.includes("does not mean the application is installed"));
   assert.ok(app.includes("Not configured"));
 });
