@@ -348,7 +348,7 @@ export default function App() {
     } finally { setCompanionBusy(false); }
   };
   const parsePhotoResult = (payload: CompanionResult) => {
-    const result = payload.result || payload;
+    const result = (payload.result || {}) as NonNullable<CompanionResult["result"]>;
     const content = Array.isArray(result.content) ? result.content : [];
     const imagePart = content.find((item) => item.type === "image" && item.data);
     setPhotoPreview(imagePart ? "data:" + (imagePart.mimeType || "image/png") + ";base64," + imagePart.data : "");
