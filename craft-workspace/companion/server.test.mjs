@@ -152,12 +152,12 @@ process.stdin.on("data", (chunk) => {
     const request = JSON.parse(line);
     if (request.method === "notifications/initialized") continue;
     let result;
-    if (request.method === "server/discover") {
-      if (request.params?._meta?.["io.modelcontextprotocol/protocolVersion"] !== "2026-07-28") {
-        process.stdout.write(JSON.stringify({ jsonrpc: "2.0", id: request.id, error: { code: -32602, message: "Missing current protocol metadata" } }) + "\n");
+    if (request.method === "initialize") {
+      if (request.params?.protocolVersion !== "2025-11-25") {
+        process.stdout.write(JSON.stringify({ jsonrpc: "2.0", id: request.id, error: { code: -32602, message: "Unsupported protocol version" } }) + "\n");
         continue;
       }
-      result = { serverInfo: { name: "fake-photocraft", version: "0.1.0" }, capabilities: { tools: {} } };
+      result = { protocolVersion: "2025-11-25", serverInfo: { name: "fake-photocraft", version: "0.1.0" }, capabilities: { tools: {} } };
     } else if (request.method === "tools/list") {
       result = { tools: [
         { name: "doc_open", description: "Open a file", inputSchema: { type: "object" } },
@@ -194,7 +194,7 @@ process.stdin.on("data", (chunk) => {
   });
 
   const tools = await client.listTools();
-  assert.equal(client.protocol, "2026-07-28");
+  assert.equal(client.protocol, "2025-11-25");
   assert.ok(tools.some((tool) => tool.name === "doc_open"));
   assert.ok(tools.some((tool) => tool.name === "command_run"));
 
