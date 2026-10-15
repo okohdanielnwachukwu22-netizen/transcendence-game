@@ -664,7 +664,7 @@ export default function App() {
     {paletteOpen && <div className="overlay palette-overlay" onMouseDown={(event) => { if (event.target === event.currentTarget) setPaletteOpen(false); }}><div className="palette">
       <div className="palette-search"><Search size={17} /><input autoFocus placeholder="Search pages and applications..." value={paletteQuery} onChange={(event) => setPaletteQuery(event.target.value)} /><kbd>ESC</kbd><button className="icon-button" aria-label="Close search" onClick={() => setPaletteOpen(false)}><X size={16} /></button></div>
       <div className="palette-label">NAVIGATION & APPLICATIONS</div>
-      <div>{filteredPalettePages.map((item) => <button className="palette-item" key={item} onClick={() => navigate(item)}><Command size={14} /> {item}<span>Open page <ChevronRight size={13} /></span></button>)}{filteredPaletteApps.map((item) => <button className="palette-item" key={item.repo} onClick={() => { setPaletteOpen(false); setModal({ type: "application", app: item }); }><GlyphIcon glyph={item.icon} size={16} /> {item.name}<small>Application</small></button>)}</div>
+      <div>{filteredPalettePages.map((item) => <button className="palette-item" key={item} onClick={() => navigate(item)}><Command size={14} /> {item}<span>Open page <ChevronRight size={13} /></span></button>)}{filteredPaletteApps.map((item) => <button className="palette-item" key={item.repo} onClick={() => { setPaletteOpen(false); launchApp(item); }}><GlyphIcon glyph={item.icon} size={16} /> {item.name}<small>Application</small></button>)}</div>
     </div></div>}
     {toast && <div className="toast" role="status">{toast}</div>}
   </div>;
