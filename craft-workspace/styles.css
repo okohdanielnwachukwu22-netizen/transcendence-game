@@ -63,3 +63,10 @@ button:active{transform:translateY(1px)}
 .icon-button{border-radius:9px;min-width:34px;min-height:34px}
 @media(max-width:1100px){.content{padding:25px 24px 42px}.topbar{padding:0 24px}.rail{width:210px}}
 @media(max-width:760px){.app{display:block}.rail{position:fixed;z-index:20;left:0;right:0;bottom:0;top:auto;height:auto;width:auto;max-height:88px;padding:7px 8px;background:var(--rail);border-right:0;border-top:1px solid var(--line)}.rail>.brand,.rail>.rail-bottom{display:none}.rail>div{display:flex;justify-content:space-around;gap:3px}.nav-group{display:contents}.nav-group>.nav-label{display:none}.nav-item{display:flex;flex-direction:column;justify-content:center;gap:2px;height:58px;padding:3px 6px;margin:0;font-size:10px;flex:1}.nav-icon{height:22px}.nav-label-text{font-size:10px}.main{padding-bottom:82px}.topbar{height:55px;padding:0 14px}.crumb{font-size:10px}.top-actions{gap:5px}.search-trigger{width:38px;min-width:38px;overflow:hidden;justify-content:flex-start;padding:0 10px}.search-trigger>span:not(:first-child),.search-trigger kbd,.top-sep{display:none}.content{padding:22px 15px 35px}.page-heading h1{font-size:29px}.page-heading{margin-bottom:20px}.library-row{gap:10px;padding:12px 8px}.status-label{display:none}.modal{padding:20px;width:min(100%,560px)}.overlay{padding:12px}.profile-top-button{display:grid}}
+
+
+/* Clear, consistent application launch affordances */
+.app-open-label { display: inline-flex; align-items: center; gap: 5px; color: var(--muted, var(--quiet)); font-size: 11px; font-weight: 650; white-space: nowrap; }
+.library-row:hover .app-open-label, .app-shortcut:hover .app-open-label { color: var(--accent, var(--text)); }
+.app-shortcut .app-open-label { margin-top: 4px; }
+.app-glyph svg, .detail-icon svg, .brand-mark svg, .nav-icon svg, .empty-icon svg, .large-icon svg { display: block; }
