@@ -54,7 +54,7 @@ Security limitation from PhotoCraft's own MCP docs: read/write roots constrain f
 ## Deployment and verification state
 
 - Workspace shell build: **passed** in the connected Node 22 sandbox.
-- Workspace registry checks: **4 passed, 0 failed**.
+- Automated checks: **9 passed, 0 failed** (four repository/navigation checks plus five local-companion allowlist, origin, pairing and file-boundary checks).
 - Vercel deployment: API reports **READY**, but the authenticated live-page fetch was denied by the current Vercel connection scope and both browser URL fetches were inaccessible. Thus live-browser smoke verification is **blocked/unverified**; deployment readiness is not equivalent to an observed page-level smoke test.
 - No build or smoke-test result is claimed for any of the 21 upstream apps.
 - No Supabase schema or data was changed. The existing Supabase project is named TRANSCENDENCE and appears unrelated to this workspace; project metadata is kept locally for now.
