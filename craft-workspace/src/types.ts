@@ -28,6 +28,8 @@ export type RegisteredApp = {
   group: string;
   kind: "creative" | "support";
   status: AuditStatus;
+  launchUrl?: string;
+  launchState?: "web" | "official-page" | "coming-soon";
 };
 
 export type WorkspaceProject = {
