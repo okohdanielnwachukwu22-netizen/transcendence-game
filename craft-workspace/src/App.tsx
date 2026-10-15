@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ALL_REPOSITORIES, AUDIT_STATUSES, CREATIVE_APPS, SUPPORT_REPOSITORIES } from "./registry";
+import { ALL_REPOSITORIES, AUDIT_STATUSES, CREATIVE_APPS } from "./registry";
+import { photocraftAdapter } from "./adapters/photocraft";
 import {
   loadActivity,
   loadAuditStatuses,
@@ -59,36 +60,6 @@ const PAGE_DESCRIPTIONS: Record<Exclude<Page, "Home">, { eyebrow: string; title:
 function readSessionToken(): string {
   try { return window.sessionStorage.getItem("craft-workspace-companion-token") || ""; }
   catch { return ""; }
-}
-
-async function companionFetch<T>(
-  endpoint: string,
-  method: "GET" | "POST",
-  body?: unknown,
-  token?: string,
-): Promise<T> {
-  const headers: Record<string, string> = {};
-  if (method !== "GET") headers["Content-Type"] = "application/json";
-  if (token) headers.Authorization = "Bearer " + token;
-  let response: Response;
-  try {
-    response = await fetch("http://127.0.0.1:4174" + endpoint, {
-      method,
-      headers,
-      body: body === undefined ? undefined : JSON.stringify(body),
-      cache: "no-store",
-      mode: "cors",
-    });
-  } catch {
-    throw new Error("The local companion could not be reached. Start companion/start-windows.ps1 on the PC that has PhotoCraft installed, then check the companion configuration.");
-  }
-  let payload: { ok?: boolean; error?: string };
-  try { payload = await response.json() as { ok?: boolean; error?: string }; }
-  catch { throw new Error("The local companion returned a response the workspace could not read."); }
-  if (!response.ok || payload.ok === false) {
-    throw new Error(payload.error || ("Local companion request failed (" + response.status + ")."));
-  }
-  return payload as T;
 }
 
 function formatBytes(value: number): string {
@@ -292,7 +263,7 @@ export default function App() {
     setCompanionBusy(true);
     setCompanionMessage("Checking the local-only companion…");
     try {
-      const health = await companionFetch<CompanionHealth>("/api/health", "GET", undefined, companionToken || undefined);
+      const health = await photocraftAdapter.health(companionToken || undefined);
       setCompanionHealth(health);
       setCompanionMessage(health.readRootConfigured
         ? "The local companion responded. Its approved file folder is configured."
@@ -311,13 +282,13 @@ export default function App() {
     setCompanionBusy(true);
     setCompanionMessage("Pairing this browser tab…");
     try {
-      const result = await companionFetch<CompanionResult>("/api/pair", "POST", { code: pairCode.trim() });
+      const result = await photocraftAdapter.pair(pairCode.trim());
       if (!result.token) throw new Error("The companion did not return a pairing token.");
       window.sessionStorage.setItem("craft-workspace-companion-token", result.token);
       setCompanionToken(result.token);
       setPairCode("");
-      const health = await companionFetch<CompanionHealth>("/api/health", "GET", undefined, result.token);
-      setCompanionHealth(health);
+      const resultHealth = await photocraftAdapter.health(result.token);
+      setCompanionHealth(resultHealth);
       setCompanionMessage("This browser tab is paired for 30 minutes. Native operations remain limited by the local allowlist.");
       recordActivity({ action: "Paired local companion", detail: "Short-lived token stored in this tab's session storage only." });
     } catch (error) {
@@ -338,7 +309,7 @@ export default function App() {
     setCompanionBusy(true);
     setCompanionMessage("Starting PhotoCraft CLI and discovering allowed MCP capabilities…");
     try {
-      const result = await companionFetch<CompanionResult>("/api/photocraft/tools", "POST", {}, companionToken);
+      const result = await photocraftAdapter.listCapabilities(companionToken);
       setCompanionTools(result.tools || []);
       setCompanionMessage("PhotoCraft MCP responded using protocol " + (result.protocol || "negotiated") + ". Only read/inspect/preview tools are listed.");
       recordActivity({ action: "Discovered PhotoCraft capabilities", detail: (result.tools || []).map((tool) => tool.name).join(", ") || "No allowlisted tools advertised." });
@@ -364,7 +335,7 @@ export default function App() {
     setCompanionBusy(true);
     setCompanionMessage("Opening the file inside the approved read folder…");
     try {
-      const result = await companionFetch<CompanionResult>("/api/photocraft/open", "POST", { path: photoPath.trim() }, companionToken);
+      const result = await photocraftAdapter.openRelativeFile(companionToken, photoPath.trim());
       parsePhotoResult(result);
       setCompanionMessage("PhotoCraft accepted the file-open request. Inspect or preview it next.");
       recordActivity({ action: "Opened PhotoCraft source file", detail: photoPath.trim() });
@@ -376,7 +347,7 @@ export default function App() {
     setCompanionBusy(true);
     setCompanionMessage("Inspecting the active PhotoCraft document…");
     try {
-      const result = await companionFetch<CompanionResult>("/api/photocraft/inspect", "POST", {}, companionToken);
+      const result = await photocraftAdapter.inspectActiveDocument(companionToken);
       parsePhotoResult(result);
       setCompanionMessage("Document inspection returned. No edit or save operation was requested.");
       recordActivity({ action: "Inspected PhotoCraft document", detail: "Read-only inspection requested." });
@@ -388,7 +359,7 @@ export default function App() {
     setCompanionBusy(true);
     setCompanionMessage("Rendering a read-only PhotoCraft preview…");
     try {
-      const result = await companionFetch<CompanionResult>("/api/photocraft/preview", "POST", {}, companionToken);
+      const result = await photocraftAdapter.renderActivePreview(companionToken);
       parsePhotoResult(result);
       setCompanionMessage(result.result?.content?.some((item) => item.type === "image")
         ? "PhotoCraft returned a preview image."
