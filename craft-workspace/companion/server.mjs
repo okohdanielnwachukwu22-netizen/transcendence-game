@@ -48,6 +48,7 @@ export function isWithinRoot(root, candidate) {
 export function safeRelativePath(input) {
   if (typeof input !== "string" || !input.trim() || input.includes("\0")) throw new Error("Choose a relative file path inside the approved folder.");
   if (path.isAbsolute(input) || /^[a-zA-Z]:[\\/]/.test(input) || input.startsWith("\\\\")) throw new Error("Absolute paths are not accepted; enter a path relative to the approved folder.");
+  if (input.split(/[\\/]+/).some(function (part) { return part === ".." || part === "."; })) throw new Error("Parent-folder and dot-segment paths are not accepted.");
   return input;
 }
 export function buildMcpArgs(readRoot, writeRoot = "") {
