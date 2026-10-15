@@ -2,11 +2,18 @@ export type ProviderMode = "local" | "cloud";
 export type ProviderPhase = "not-configured" | "configured" | "verified" | "blocked";
 export type DataClassification = "prompt-only" | "project-metadata" | "private-file-content";
 
+export type OffDeviceConsent = {
+  providerId: string;
+  classification: Exclude<DataClassification, "prompt-only">;
+  approvedAt: string;
+};
+
 export type AICompletionRequest = {
   prompt: string;
   classification: DataClassification;
   projectId?: string;
   approvedFileReferences?: string[];
+  offDeviceConsent?: OffDeviceConsent;
   signal?: AbortSignal;
 };
 
@@ -54,6 +61,12 @@ export class AIProviderRegistry {
     if (!provider) throw new Error("The selected AI provider is not configured.");
     if (!provider.descriptor.accepts.includes(request.classification)) {
       throw new Error("The selected provider is not approved for this data classification.");
+    }
+    if (provider.descriptor.sendsDataOffDevice && request.classification !== "prompt-only") {
+      const consent = request.offDeviceConsent;
+      if (!consent || consent.providerId !== id || consent.classification !== request.classification || !consent.approvedAt) {
+        throw new Error("Explicit approval is required before sending project metadata or private file content off this device.");
+      }
     }
     return provider.complete(request);
   }
