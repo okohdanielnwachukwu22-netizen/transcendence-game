@@ -357,7 +357,7 @@ export function createCompanionServer(config, opts = {}) {
         sessionsLocal.set(token, Date.now() + SESSION_MS);
         return sendJson(res, 200, { ok: true, token, expiresInSeconds: SESSION_MS / 1000 });
       }
-      requireSession(req);
+      requireSession(req, sessionsLocal);
       const client = getClient();
       if (url.pathname === "/api/photocraft/tools") {
         const tools = await client.listTools();
