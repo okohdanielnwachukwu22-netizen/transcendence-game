@@ -381,7 +381,7 @@ export function createCompanionServer(config, opts = {}) {
         });
       }
       if (url.pathname === "/api/photocraft/open") {
-        const relativePath = safeRelativePath(body.path);
+        const relativePath = body.path;
         await resolveReadFile(config, relativePath);
         const result = await client.callSafeTool("doc_open", { path: relativePath }).catch((error) => {
           // Opening is deliberately allowlisted as a user-initiated read inside the sandbox root.
