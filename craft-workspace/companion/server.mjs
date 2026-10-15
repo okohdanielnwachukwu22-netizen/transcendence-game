@@ -305,7 +305,9 @@ class McpStdioClient {
 }
 
 async function resolveReadFile(config, relativeInput) {
-  const safe = safeRelativePath(relativeInput);
+  let safe;
+  try { safe = safeRelativePath(relativeInput); }
+  catch (error) { throw createError(error.message, 400); }
   const candidate = path.resolve(config.readRoot, safe);
   if (!isWithinRoot(config.readRoot, candidate) || candidate === config.readRoot) throw createError("The requested file is outside the approved read folder.", 403);
   let actual;
