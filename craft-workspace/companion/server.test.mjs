@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import path from "node:path";
-import { isAllowedOrigin, isWithinRoot, safeRelativePath, buildMcpArgs } from "./server.mjs";
+import { isAllowedOrigin, isWithinRoot, safeRelativePath, buildMcpArgs, McpStdioClient } from "./server.mjs";
 
 test("accepts only explicitly configured origins", () => {
   const origins = new Set(["https://craft-workspace.vercel.app", "http://localhost:5173"]);
@@ -126,4 +126,86 @@ test("local API requires a listed origin, pairing, and an in-root file path", as
   assert.equal(inspect.status, 200);
   assert.equal(toolCalls.some((item) => item.name === "doc_inspect"), true);
   assert.equal(toolCalls.some((item) => item.name === "command_run"), false);
+});
+
+
+import { chmod } from "node:fs/promises";
+
+test("stdio client negotiates MCP and calls only registered read tools", async (t) => {
+  if (process.platform === "win32") {
+    t.skip("The fake CLI uses a POSIX Node shebang; Windows companion launch requires a native release smoke test.");
+    return;
+  }
+
+  const root = await mkdtemp(path.join(os.tmpdir(), "craft-mcp-stdio-test-"));
+  const fakeCli = path.join(root, "fake-photocraft-cli.mjs");
+  const source = String.raw\`#!/usr/bin/env node
+let buffer = "";
+process.stdin.setEncoding("utf8");
+process.stdin.on("data", (chunk) => {
+  buffer += chunk;
+  let pos;
+  while ((pos = buffer.indexOf("\\n")) >= 0) {
+    const line = buffer.slice(0, pos);
+    buffer = buffer.slice(pos + 1);
+    if (!line.trim()) continue;
+    const request = JSON.parse(line);
+    if (request.method === "notifications/initialized") continue;
+    let result;
+    if (request.method === "server/discover") {
+      if (request.params?._meta?.["io.modelcontextprotocol/protocolVersion"] !== "2026-07-28") {
+        process.stdout.write(JSON.stringify({ jsonrpc: "2.0", id: request.id, error: { code: -32602, message: "Missing current protocol metadata" } }) + "\\n");
+        continue;
+      }
+      result = { serverInfo: { name: "fake-photocraft", version: "0.1.0" }, capabilities: { tools: {} } };
+    } else if (request.method === "tools/list") {
+      result = { tools: [
+        { name: "doc_open", description: "Open a file", inputSchema: { type: "object" } },
+        { name: "doc_inspect", description: "Inspect document", inputSchema: { type: "object" } },
+        { name: "render_preview", description: "Render preview", inputSchema: { type: "object" } },
+        { name: "command_run", description: "Not allowlisted", inputSchema: { type: "object" } }
+      ] };
+    } else if (request.method === "tools/call") {
+      if (request.params.name === "doc_open") {
+        result = { content: [{ type: "text", text: "opened " + request.params.arguments.path }] };
+      } else if (request.params.name === "doc_inspect") {
+        result = { content: [{ type: "text", text: "document inspected" }] };
+      } else if (request.params.name === "render_preview") {
+        result = { content: [{ type: "text", text: "preview rendered" }] };
+      } else {
+        process.stdout.write(JSON.stringify({ jsonrpc: "2.0", id: request.id, error: { code: -32601, message: "Unknown tool" } }) + "\\n");
+        continue;
+      }
+    } else {
+      process.stdout.write(JSON.stringify({ jsonrpc: "2.0", id: request.id, error: { code: -32601, message: "Method not found" } }) + "\\n");
+      continue;
+    }
+    process.stdout.write(JSON.stringify({ jsonrpc: "2.0", id: request.id, result }) + "\\n");
+  }
+});
+\`;
+  await writeFile(fakeCli, source, "utf8");
+  await chmod(fakeCli, 0o755);
+
+  const client = new McpStdioClient({ readRoot: root, writeRoot: "", cliPath: fakeCli });
+  t.after(async () => {
+    client.close();
+    await rm(root, { recursive: true, force: true });
+  });
+
+  const tools = await client.listTools();
+  assert.equal(client.protocol, "2026-07-28");
+  assert.ok(tools.some((tool) => tool.name === "doc_open"));
+  assert.ok(tools.some((tool) => tool.name === "command_run"));
+
+  const opened = await client.callSafeTool("doc_open", { path: path.join(root, "sample.psd") });
+  assert.equal(opened.content[0].text, "opened " + path.join(root, "sample.psd"));
+
+  const inspected = await client.callSafeTool("doc_inspect", {});
+  assert.equal(inspected.content[0].text, "document inspected");
+
+  await assert.rejects(
+    () => client.callSafeTool("command_run", { command: "anything" }),
+    /not enabled in the workspace companion/
+  );
 });
