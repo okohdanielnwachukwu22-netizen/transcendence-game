@@ -26,7 +26,6 @@ type ModalState =
   | { type: "new-project" }
   | { type: "rename-project"; project: WorkspaceProject }
   | { type: "project-options"; project: WorkspaceProject }
-  | { type: "application"; app: RegisteredApp }
   | { type: "image-preview"; file: File; url: string }
   | { type: "help" }
   | { type: "clear-data" }
@@ -442,7 +441,7 @@ export default function App() {
     </section>
     <section className="section" style={{ border: 0 }}>
       <div className="section-head"><div><span className="section-index">02</span><h2>Creative applications</h2></div><button className="text-button" onClick={() => navigate("Applications")}>Browse library ↗</button></div>
-      <div className="apps-shortcuts">{CREATIVE_APPS.slice(0, 6).map((item) => <button className="app-shortcut" key={item.repo} onClick={() => launchApp(item)}><div className="app-glyph"><GlyphIcon glyph={item.icon} size={22} /></div><span>{item.name}</span><small>{item.group}</small></button>)}</div>
+      <div className="apps-shortcuts">{CREATIVE_APPS.slice(0, 6).map((item) => <button className="app-shortcut" key={item.repo} onClick={() => launchApp(item)}><div className="app-glyph"><GlyphIcon glyph={item.icon} size={22} /></div><span>{item.name}</span><small>{item.group}</small><span className="app-open-label">Open <ChevronRight size={13} /></span></button>)}</div>
     </section>
     <div className="bottom-status">
       <div><span className="status-ring" /> Local companion <b>{companionHealth?.paired ? "Paired" : "Not connected"}</b></div>
@@ -600,14 +599,6 @@ export default function App() {
       <div className="panel-top"><span>PROJECT OPTIONS</span><button type="button" className="icon-button" aria-label="Close dialog" onClick={() => setModal(null)}><X size={17} /></button></div>
       <h2>{modal.project.name}</h2><p>{modal.project.description || "Workspace project"}</p>
       <div className="modal-actions"><button type="button" className="secondary" onClick={() => beginRename(modal.project)}>Rename</button><button type="button" className="secondary" onClick={() => deleteProject(modal.project)}>Delete</button></div>
-    </WorkspaceModal>;
-    if (modal.type === "application") return <WorkspaceModal modal={modal} onClose={() => setModal(null)}>
-      <div className="panel-top"><span>APPLICATION DETAILS</span><button type="button" className="icon-button" aria-label="Close dialog" onClick={() => setModal(null)}><X size={17} /></button></div>
-      <div className="detail-icon"><GlyphIcon glyph={modal.app.icon} size={28} /></div><h2>{modal.app.name}</h2><p>{modal.app.description}</p>
-      <div className="application-feature-list"><b>What this application is for</b><p>{modal.app.description}. Keep this type of work organised within the Craft Workspace suite.</p><b>Workspace availability</b><p>{modal.app.repo === "photocraft" ? "A local connection panel is available in AI Workspace. Start and pair the companion on the computer that has PhotoCraft installed to test the real application." : "This application is registered in the suite, but its native runtime has not yet been connected. We will not pretend a launch has succeeded."}</p></div>
-      <div className="detail-meta"><span>Application</span><b>{modal.app.name}</b><span>Integration status</span><b>{auditStatuses[modal.app.repo] || modal.app.status}</b><span>Launch method</span><b>{modal.app.repo === "photocraft" ? "Local desktop companion · setup required" : "Integration required"}</b></div>
-      <div className="notice">{modal.app.repo === "photocraft" ? "Open AI Workspace to pair the local PhotoCraft companion. PhotoCraft must be installed on your PC." : "Direct launching is not connected for this app yet. The next integration must connect the actual application, not open its source repository."}</div>
-      <div className="modal-actions"><button type="button" className="secondary" onClick={() => setModal(null)}>Close</button><button type="button" className="primary" onClick={() => { const target = modal.app.repo === "photocraft" ? "AI Workspace" : "Diagnostics"; setModal(null); navigate(target as Page); }}>{modal.app.repo === "photocraft" ? "Open connection panel" : "View integration status"} ↗</button></div>
     </WorkspaceModal>;
     if (modal.type === "image-preview") return <WorkspaceModal modal={modal} onClose={() => setModal(null)}>
       <div className="panel-top"><span>IMAGE PREVIEW</span><button type="button" className="icon-button" aria-label="Close dialog" onClick={() => setModal(null)}><X size={17} /></button></div>
