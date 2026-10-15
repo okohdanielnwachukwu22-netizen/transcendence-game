@@ -4,5 +4,5 @@ $env:CRAFT_PHOTOCRAFT_CLI = "C:\Program Files\PhotoCraft\photocraft-cli.exe"
 $env:CRAFT_PHOTOCRAFT_READ_ROOT = "$env:USERPROFILE\CraftWorkspace\input"
 # Leave write root unset for the first, read-only pilot. This implementation does not expose write tools.
 # $env:CRAFT_PHOTOCRAFT_WRITE_ROOT = "$env:USERPROFILE\CraftWorkspace\output"
-$env:CRAFT_ALLOWED_ORIGINS = "https://craft-workspace.vercel.app,http://localhost:5173,http://127.0.0.1:4173"
+$env:CRAFT_ALLOWED_ORIGINS = "https://craft-workspace-ohxpg7w8x-damien-a18e.vercel.app,https://craft-workspace.vercel.app,http://localhost:5173,http://127.0.0.1:4173"
 # The pairing code is generated fresh on each launch and printed in the local terminal.
