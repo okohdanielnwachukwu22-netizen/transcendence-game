@@ -145,7 +145,7 @@ process.stdin.setEncoding("utf8");
 process.stdin.on("data", (chunk) => {
   buffer += chunk;
   let pos;
-  while ((pos = buffer.indexOf("\\n")) >= 0) {
+  while ((pos = buffer.indexOf("\n")) >= 0) {
     const line = buffer.slice(0, pos);
     buffer = buffer.slice(pos + 1);
     if (!line.trim()) continue;
@@ -154,7 +154,7 @@ process.stdin.on("data", (chunk) => {
     let result;
     if (request.method === "server/discover") {
       if (request.params?._meta?.["io.modelcontextprotocol/protocolVersion"] !== "2026-07-28") {
-        process.stdout.write(JSON.stringify({ jsonrpc: "2.0", id: request.id, error: { code: -32602, message: "Missing current protocol metadata" } }) + "\\n");
+        process.stdout.write(JSON.stringify({ jsonrpc: "2.0", id: request.id, error: { code: -32602, message: "Missing current protocol metadata" } }) + "\n");
         continue;
       }
       result = { serverInfo: { name: "fake-photocraft", version: "0.1.0" }, capabilities: { tools: {} } };
@@ -173,14 +173,14 @@ process.stdin.on("data", (chunk) => {
       } else if (request.params.name === "render_preview") {
         result = { content: [{ type: "text", text: "preview rendered" }] };
       } else {
-        process.stdout.write(JSON.stringify({ jsonrpc: "2.0", id: request.id, error: { code: -32601, message: "Unknown tool" } }) + "\\n");
+        process.stdout.write(JSON.stringify({ jsonrpc: "2.0", id: request.id, error: { code: -32601, message: "Unknown tool" } }) + "\n");
         continue;
       }
     } else {
-      process.stdout.write(JSON.stringify({ jsonrpc: "2.0", id: request.id, error: { code: -32601, message: "Method not found" } }) + "\\n");
+      process.stdout.write(JSON.stringify({ jsonrpc: "2.0", id: request.id, error: { code: -32601, message: "Method not found" } }) + "\n");
       continue;
     }
-    process.stdout.write(JSON.stringify({ jsonrpc: "2.0", id: request.id, result }) + "\\n");
+    process.stdout.write(JSON.stringify({ jsonrpc: "2.0", id: request.id, result }) + "\n");
   }
 });
 `;
