@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#101114">
+<title>Craft Workspace</title>
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body><div class="app" id="app">
+<aside class="rail">
+  <button class="brand" data-page="Home" aria-label="Craft Workspace home"><span class="brand-mark">◈</span><span class="brand-name">craft<span class="brand-light">workspace</span></span></button>
+  <div id="nav"></div>
+  <div class="rail-bottom">
+    <button class="nav-item" data-action="theme"><span class="nav-icon">◐</span><span class="nav-label-text" id="themeLabel">Light appearance</span></button>
+    <button class="nav-item" data-page="Settings"><span class="nav-icon">⚙</span><span class="nav-label-text">Settings</span></button>
+    <div class="profile"><div class="profile-dot">CW</div><div class="profile-meta"><b>Local workspace</b><small>Saved in this browser</small></div></div>
+  </div>
+</aside>
+<main class="main">
+<header class="topbar"><div class="crumb"><span>Craft Workspace</span><span class="slash">/</span><b id="crumbPage">Home</b></div><div class="top-actions"><button class="search-trigger" id="openPalette"><span>⌕</span><span>Search anything...</span><kbd>Ctrl K</kbd></button><span class="top-sep"></span><button class="icon-button" title="Help" id="helpBtn">ⓘ</button><button class="icon-button" title="Diagnostics" data-page="Diagnostics">⎈</button></div></header>
+<div class="content" id="view"></div>
+</main></div>
+<div id="overlayRoot"></div><div id="toastRoot"></div>
+<script src="./app.js" defer></script>
+</body></html>
