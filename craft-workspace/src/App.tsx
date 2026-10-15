@@ -241,7 +241,6 @@ export default function App() {
     writeLocal("activity", []);
     writeLocal("repoStatuses", {});
     setModal(null);
-    recordActivity({ action: "Cleared workspace records", detail: "Local project, activity and audit metadata cleared." });
     notify("Local workspace records cleared.");
   };
 
