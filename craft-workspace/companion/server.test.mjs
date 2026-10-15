@@ -139,7 +139,7 @@ test("stdio client negotiates MCP and calls only registered read tools", async (
 
   const root = await mkdtemp(path.join(os.tmpdir(), "craft-mcp-stdio-test-"));
   const fakeCli = path.join(root, "fake-photocraft-cli.mjs");
-  const source = String.raw\`#!/usr/bin/env node
+  const source = String.raw`#!/usr/bin/env node
 let buffer = "";
 process.stdin.setEncoding("utf8");
 process.stdin.on("data", (chunk) => {
@@ -183,7 +183,7 @@ process.stdin.on("data", (chunk) => {
     process.stdout.write(JSON.stringify({ jsonrpc: "2.0", id: request.id, result }) + "\\n");
   }
 });
-\`;
+`;
   await writeFile(fakeCli, source, "utf8");
   await chmod(fakeCli, 0o755);
 
