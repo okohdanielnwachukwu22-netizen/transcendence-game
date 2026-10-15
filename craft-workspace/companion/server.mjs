@@ -355,8 +355,13 @@ export function createCompanionServer(config, opts = {}) {
       const body = await readJson(req);
       if (url.pathname === "/api/pair") {
         const address = req.socket.remoteAddress || "loopback";
-        if (recordPairFailure(address) > 5) throw createError("Too many pairing attempts. Wait one minute and try again.", 429);
-        if (!sameCode(body.code, code)) throw createError("Pairing code did not match. Read the code printed by the local companion.", 401);
+        const attempts = (pairAttempts.get(address) || []).filter(function (time) { return Date.now() - time < 60_000; });
+        if (attempts.length >= 5) throw createError("Too many pairing attempts. Wait one minute and try again.", 429);
+        if (!sameCode(body.code, code)) {
+          recordPairFailure(address);
+          throw createError("Pairing code did not match. Read the code printed by the local companion.", 401);
+        }
+        pairAttempts.delete(address);
         const token = randomBytes(32).toString("base64url");
         sessionsLocal.set(token, Date.now() + SESSION_MS);
         return sendJson(res, 200, { ok: true, token, expiresInSeconds: SESSION_MS / 1000 });
@@ -376,8 +381,9 @@ export function createCompanionServer(config, opts = {}) {
         });
       }
       if (url.pathname === "/api/photocraft/open") {
-        const filePath = await resolveReadFile(config, body.path);
-        const result = await client.callSafeTool("doc_open", { path: filePath }).catch((error) => {
+        const relativePath = safeRelativePath(body.path);
+        await resolveReadFile(config, relativePath);
+        const result = await client.callSafeTool("doc_open", { path: relativePath }).catch((error) => {
           // Opening is deliberately allowlisted as a user-initiated read inside the sandbox root.
           if (/not enabled|does not advertise/.test(error.message)) throw error;
           throw error;
