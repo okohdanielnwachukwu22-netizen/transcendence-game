@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Activity, AudioLines, BookOpenText, Boxes, CheckCircle2, ChevronRight, CircleHelp, Command, FileImage, FileText, FolderKanban, Grid2X2, House, Image, LayoutGrid, Lightbulb, MoreHorizontal, Moon, Palette, Pencil, Plus, Search, Settings, ShieldCheck, Sparkles, Sun, Upload, UserRound, Video, Workflow, Wrench, X, type LucideIcon } from "lucide-react";
+import { Activity, AudioLines, BookOpenText, ChevronRight, CircleHelp, Command, ExternalLink, FileText, FolderKanban, Grid2X2, House, Image, LayoutGrid, MoreHorizontal, Moon, Pencil, Plus, Search, Settings, ShieldCheck, Sparkles, Sun, Video, Workflow, X, type LucideIcon } from "lucide-react";
 import { ALL_REPOSITORIES, AUDIT_STATUSES, CREATIVE_APPS } from "./registry";
 import { photocraftAdapter } from "./adapters/photocraft";
 import {
@@ -423,7 +423,7 @@ export default function App() {
         <h1>Make room for<br /><em>good work.</em></h1>
         <p>Your creative tools, project notes, and selected files — together in a considered workspace. Workspace metadata is saved in this browser until a secure shared-storage service is configured.</p>
         <div className="hero-actions">
-          <button className="primary" onClick={openNewProject}>＋ New project</button>
+          <button className="primary" onClick={openNewProject}><Plus size={16} /> New project</button>
           <button className="secondary" onClick={() => navigate("Applications")}>Explore applications ↗</button>
         </div>
       </div>
@@ -453,7 +453,7 @@ export default function App() {
   const renderApplications = () => <div>
     <PageHeading page="Applications" />
     <div className="library-tools">
-      <div className="inline-search"><span>⌕</span><input aria-label="Find an application" placeholder="Find an application" value={search} onChange={(event) => setSearch(event.target.value)} /></div>
+      <div className="inline-search"><Search size={15} /><input aria-label="Find an application" placeholder="Find an application" value={search} onChange={(event) => setSearch(event.target.value)} /></div>
       <span>{filteredApps.length} creative applications</span>
     </div>
     {appGroups.map((group) => {
@@ -463,7 +463,7 @@ export default function App() {
         {groupApps.map((item) => <button className="library-row" key={item.repo} onClick={() => launchApp(item)}>
           <div className="app-glyph"><GlyphIcon glyph={item.icon} size={22} /></div>
           <div className="library-info"><b>{item.name}</b><small>{item.description}</small></div>
-          <StatusLabel>{auditStatuses[item.repo] || item.status}</StatusLabel><span>↗</span>
+          <StatusLabel>{auditStatuses[item.repo] || item.status}</StatusLabel><span className="app-open-label">Open <ExternalLink size={13} /></span>
         </button>)}
       </section>;
     })}
@@ -480,13 +480,13 @@ export default function App() {
 
   const renderFiles = () => <div>
     <PageHeading page="Files" />
-    <div className="section-head page-top"><div><h2>Selected files</h2><p style={{ fontSize: 11, color: "var(--muted)", margin: "4px 0" }}>{files.length} file{files.length === 1 ? "" : "s"} selected in this session</p></div><button className="primary" onClick={() => filePickerRef.current?.click()}>＋ Add files</button></div>
+    <div className="section-head page-top"><div><h2>Selected files</h2><p style={{ fontSize: 11, color: "var(--muted)", margin: "4px 0" }}>{files.length} file{files.length === 1 ? "" : "s"} selected in this session</p></div><button className="primary" onClick={() => filePickerRef.current?.click()}><Plus size={16} /> Add files</button></div>
     <input className="hide" ref={filePickerRef} type="file" multiple onChange={selectedFiles} />
     <div className="file-list">{files.map((file, index) => <div className="file-row" key={file.name + ":" + file.size + ":" + file.lastModified}>
       <div className="project-thumb">{file.type.startsWith("image/") ? "▧" : file.type === "application/pdf" ? "▤" : "↧"}</div>
       <div className="file-info"><b>{file.name}</b><small>{file.type || "Unknown file type"} · {formatBytes(file.size)}</small></div>
       <button className="secondary" style={{ minHeight: 29 }} onClick={() => openSelectedFile(file)}>Open</button>
-      <button className="icon-button" aria-label={"Remove " + file.name} onClick={() => { setFiles((current) => current.filter((_, i) => i !== index)); recordActivity({ action: "Removed selected file", detail: file.name }); }}>×</button>
+      <button className="icon-button" aria-label={"Remove " + file.name} onClick={() => { setFiles((current) => current.filter((_, i) => i !== index)); recordActivity({ action: "Removed selected file", detail: file.name }); }}><X size={16} /></button>
     </div>)}</div>
     {!files.length && <div className="empty-large"><div className="large-icon"><FileText size={24} /></div><h3>No files selected</h3><p>Use “Add files” to choose local files. The browser accesses only the files you select.</p><button className="primary" onClick={() => filePickerRef.current?.click()}>＋ Add files</button></div>}
     <p style={{ fontSize: 10, color: "var(--quiet)", lineHeight: 1.7, marginTop: 16 }}>File selections last for this browser session only. The PhotoCraft companion uses a separate locally approved folder. Persistent shared assets need a verified storage layer and explicit configuration.</p>
