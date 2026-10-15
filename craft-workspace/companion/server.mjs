@@ -13,7 +13,7 @@ const PORT = Number(process.env.CRAFT_COMPANION_PORT || 4174);
 const MAX_BODY = 64 * 1024;
 const MAX_RPC_LINE = 16 * 1024 * 1024;
 const SESSION_MS = 30 * 60 * 1000;
-const READ_TOOLS = new Set(["command_list", "doc_inspect", "render_preview", "doc_render_preview", "session_list"]);
+const READ_TOOLS = new Set(["command_list", "doc_inspect", "render_preview", "doc_render_preview", "session_list", "doc_open"]);
 const CLIENT_INFO = { name: "craft-workspace-companion", version: VERSION };
 const MODERN_META = {
   "io.modelcontextprotocol/protocolVersion": "2026-07-28",
@@ -61,8 +61,8 @@ function createError(message, status = 400) {
   error.status = status;
   return error;
 }
-function allowedHost(hostHeader) {
-  return hostHeader === "127.0.0.1:" + PORT || hostHeader === "localhost:" + PORT;
+function allowedHost(hostHeader, port = PORT) {
+  return hostHeader === "127.0.0.1:" + port || hostHeader === "localhost:" + port;
 }
 function sameCode(a, b) {
   if (typeof a !== "string" || typeof b !== "string") return false;
@@ -80,9 +80,9 @@ function sendJson(res, status, payload) {
   });
   res.end(data);
 }
-function applyCors(req, res) {
+function applyCors(req, res, allowlist = ALLOWED_ORIGINS) {
   const origin = req.headers.origin;
-  if (!isAllowedOrigin(origin)) throw createError("This browser origin is not approved for the local companion.", 403);
+  if (!isAllowedOrigin(origin, allowlist)) throw createError("This browser origin is not approved for the local companion.", 403);
   res.setHeader("Access-Control-Allow-Origin", origin);
   res.setHeader("Vary", "Origin");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
@@ -110,14 +110,14 @@ function getBearer(req) {
   if (!value.startsWith("Bearer ")) return "";
   return value.slice(7);
 }
-function requireSession(req) {
+function requireSession(req, activeSessions = sessions) {
   const token = getBearer(req);
-  const expiry = sessions.get(token);
+  const expiry = activeSessions.get(token);
   if (!token || !expiry || expiry <= Date.now()) {
-    if (token) sessions.delete(token);
+    if (token) activeSessions.delete(token);
     throw createError("This browser is not paired. Pair again from the workspace.", 401);
   }
-  sessions.set(token, expiry);
+  activeSessions.set(token, expiry);
 }
 function recordPairFailure(address) {
   const now = Date.now();
@@ -325,19 +325,22 @@ export function createCompanionServer(config, opts = {}) {
   };
   const server = http.createServer(async function (req, res) {
     try {
-      if (!allowedHost(req.headers.host)) throw createError("Only the configured loopback host is accepted.", 403);
-      applyCors(req, res);
+      if (!allowedHost(req.headers.host, opts.port || PORT)) throw createError("Only the configured loopback host is accepted.", 403);
+      applyCors(req, res, allowed);
       if (req.method === "OPTIONS") {
         res.writeHead(204, { "Cache-Control": "no-store" });
         return res.end();
       }
       const url = new URL(req.url || "/", "http://127.0.0.1:" + PORT);
       if (req.method === "GET" && url.pathname === "/api/health") {
+        const healthToken = getBearer(req);
+        const expiry = sessionsLocal.get(healthToken);
+        if (expiry && expiry <= Date.now()) sessionsLocal.delete(healthToken);
         return sendJson(res, 200, {
           ok: true,
           companionVersion: VERSION,
           service: "PhotoCraft local companion",
-          paired: false,
+          paired: Boolean(expiry && expiry > Date.now()),
           cliConfigured: Boolean(config.cliPath),
           readRootConfigured: Boolean(config.readRoot),
           writeRootConfigured: Boolean(config.writeRoot),
