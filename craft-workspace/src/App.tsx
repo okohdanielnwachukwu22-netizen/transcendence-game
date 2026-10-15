@@ -180,11 +180,12 @@ export default function App() {
       recordActivity({ action: "Application launch unavailable", detail: item.name + " has no verified launch target." });
       return;
     }
-    const opened = window.open(item.launchUrl, "_blank", "noopener,noreferrer");
+    const opened = window.open(item.launchUrl, "_blank");
     if (!opened) {
       notify("Your browser blocked the new tab. Allow pop-ups for Craft Workspace and try again.");
       return;
     }
+    opened.opener = null;
     recordActivity({ action: "Opened official application", detail: item.name + " · " + item.launchUrl });
   };
   const navigate = (next: Page) => { setPage(next); setSearch(""); setPaletteOpen(false); };
@@ -460,7 +461,7 @@ export default function App() {
       const groupApps = filteredApps.filter((item) => item.group === group);
       return <section className="library-group" key={group}>
         <div className="group-title">{group}<span>{String(groupApps.length).padStart(2, "0")}</span></div>
-        {groupApps.map((item) => <button className="library-row" key={item.repo} onClick={() => setModal({ type: "application", app: item })}>
+        {groupApps.map((item) => <button className="library-row" key={item.repo} onClick={() => launchApp(item)}>
           <div className="app-glyph"><GlyphIcon glyph={item.icon} size={22} /></div>
           <div className="library-info"><b>{item.name}</b><small>{item.description}</small></div>
           <StatusLabel>{auditStatuses[item.repo] || item.status}</StatusLabel><span>↗</span>
