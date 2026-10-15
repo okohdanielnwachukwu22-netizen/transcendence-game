@@ -23,7 +23,8 @@ const MODERN_META = {
 
 function parseOrigins(raw) {
   return new Set(String(raw || [
-    "https://craft-workspace-ohxpg7w8x-damien-a18e.vercel.app",
+    "https://craft-workspace-e0jossgif-damien-a18e.vercel.app",
+    "https://craft-workspace-git-craft-workspace-damien-a18e.vercel.app",
     "https://craft-workspace.vercel.app",
     "https://craft-workspace-damien-a18e.vercel.app",
     "http://localhost:5173",
