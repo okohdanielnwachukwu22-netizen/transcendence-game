@@ -174,6 +174,19 @@ export default function App() {
     setActivity((current) => [entry, ...current].slice(0, 100));
   };
   const notify = (message: string) => setToast(message);
+  const launchApp = (item: RegisteredApp) => {
+    if (item.launchState === "coming-soon" || !item.launchUrl) {
+      notify(item.name + " does not have a published launch target yet.");
+      recordActivity({ action: "Application launch unavailable", detail: item.name + " has no verified launch target." });
+      return;
+    }
+    const opened = window.open(item.launchUrl, "_blank", "noopener,noreferrer");
+    if (!opened) {
+      notify("Your browser blocked the new tab. Allow pop-ups for Craft Workspace and try again.");
+      return;
+    }
+    recordActivity({ action: "Opened official application", detail: item.name + " · " + item.launchUrl });
+  };
   const navigate = (next: Page) => { setPage(next); setSearch(""); setPaletteOpen(false); };
   const toggleTheme = () => setTheme((current) => current === "dark" ? "light" : "dark");
 
@@ -428,7 +441,7 @@ export default function App() {
     </section>
     <section className="section" style={{ border: 0 }}>
       <div className="section-head"><div><span className="section-index">02</span><h2>Creative applications</h2></div><button className="text-button" onClick={() => navigate("Applications")}>Browse library ↗</button></div>
-      <div className="apps-shortcuts">{CREATIVE_APPS.slice(0, 6).map((item) => <button className="app-shortcut" key={item.repo} onClick={() => setModal({ type: "application", app: item })}><div className="app-glyph"><GlyphIcon glyph={item.icon} size={22} /></div><span>{item.name}</span><small>{item.group}</small></button>)}</div>
+      <div className="apps-shortcuts">{CREATIVE_APPS.slice(0, 6).map((item) => <button className="app-shortcut" key={item.repo} onClick={() => launchApp(item)}><div className="app-glyph"><GlyphIcon glyph={item.icon} size={22} /></div><span>{item.name}</span><small>{item.group}</small></button>)}</div>
     </section>
     <div className="bottom-status">
       <div><span className="status-ring" /> Local companion <b>{companionHealth?.paired ? "Paired" : "Not connected"}</b></div>
